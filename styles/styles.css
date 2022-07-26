@@ -1,0 +1,43 @@
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-image: url("../assets/img/paper_background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.content{
+  height: 100vh;
+  display: flex;
+}
+
+.main_content{
+  flex-grow: 1;
+  padding: 15px;
+}
+
+#chat{
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(234, 223, 179);
+  padding: 20px;
+}
+
+#messages{
+  height: 85%;
+  background-color: #fff;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+#chatControlls{
+  flex-grow: 1;
+}
+
+#chatInput{
+  height: 100%;
+  width: 80%;
+}
