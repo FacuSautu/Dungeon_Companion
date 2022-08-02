@@ -7,10 +7,22 @@
     <link rel="stylesheet" href="styles/styles.css">
   </head>
   <body>
+    <div class="" id="toolbar">
+      <ul>
+        <li class="active"><i class="fa-lg fa-solid fa-arrow-pointer"></i></li>
+        <li><i class="fa-lg fa-solid fa-cube"></i></li>
+        <li><i class="fa-lg fa-solid fa-paintbrush"></i></li>
+        <li><i class="fa-lg fa-solid fa-magnifying-glass"></i></li>
+        <li><i class="fa-lg fa-solid fa-ruler-horizontal"></i></li>
+        <li><i class="fa-lg fa-solid fa-cloud"></i></li>
+        <li><i class="fa-lg fa-solid fa-clock"></i></li>
+        <li><i class="fa-lg fa-solid fa-dice-d20"></i></li>
+        <li><i class="fa-lg fa-solid fa-circle-question"></i></li>
+      </ul>
+    </div>
+
     <div class="content">
-      <main class="main_content">
-        <canvas id="canvas"></canvas>
-      </main>
+      <canvas class="main_content" id="canvas"></canvas>
 
       <div id="chat">
         <div id="messages"></div>
@@ -20,6 +32,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Font Aweasome -->
+    <script src="https://kit.fontawesome.com/deadcfe648.js" crossorigin="anonymous"></script>
 
     <script src="scripts/clases.js" charset="utf-8"></script>
     <script src="scripts/PJs.js" charset="utf-8"></script>

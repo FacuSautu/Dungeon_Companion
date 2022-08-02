@@ -24,3 +24,30 @@ let garret = {
   speed: 25,
   HP: 9
 };
+
+let leosariph = {
+  namePJ: 'Leosariph Yimir',
+  nameJugador: 'Facundo',
+  class: 'Sorcerer Aberrant Mind',
+  race: 'Half-Elf',
+  background: 'Nobel',
+  alignment: 'NG',
+  exp: 0,
+  STR: 8,
+  STRMod: -1,
+  DEX: 16,
+  DEXMod: +3,
+  CON: 12,
+  CONMod: +1,
+  INT: 13,
+  INTMod: +1,
+  WIS: 10,
+  WISMod: 0,
+  CHA: 16,
+  CHAMod: +3,
+  proficiency: +2,
+  CA: 14,
+  initiative: +3,
+  speed: 30,
+  HP: 9
+};
