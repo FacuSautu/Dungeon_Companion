@@ -10,10 +10,10 @@ console.log(toolbarMenu);
 // Instanciación de objetos.
 const PJs = [new HojaPJ(garret), new HojaPJ(leosariph)];
 const tokens = [
-  new Token(0, 20, 20, 20, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
-  new Token(1, 100, 100, 20, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
+  new Token(0, 20, 20, 30, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
+  new Token(1, 100, 100, 30, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
 ];
-const map = new Map(canvas, 750, 750, [20, 20], tokens);
+const map = new Map(canvas, 1200, 1200, [20, 20], tokens);
 map.renderGrid();
 map.update();
 
