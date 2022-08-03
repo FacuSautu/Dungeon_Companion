@@ -3,9 +3,7 @@ const canvas = document.getElementById('canvas');
 const chatLog = document.getElementById('messages');
 const chatBtn = document.getElementById('chatBtn');
 const chatBox = document.getElementById('chatInput');
-const toolbarMenu = document.querySelectorAll('toolbar');
-
-console.log(toolbarMenu);
+const toolbarMenu = document.querySelectorAll('#toolbar ul li');
 
 // Instanciación de objetos.
 const PJs = [new HojaPJ(garret), new HojaPJ(leosariph)];
@@ -19,14 +17,14 @@ map.update();
 
 const engine = new Engine(1000/30, update, render);
 
-const user = new User('Facu', true, tokens)
+const user = new User('Facu', true, tokens);
 const chat = new Chat(user, chatLog);
 
 
 
 // Definición de Event Listeners.
 // Evento para enviar mensaje por chat clickeando el boton de "Send".
-chatBtn.addEventListener('click', (event) =>{
+chatBtn.addEventListener('click', () =>{
   if (chat.sendMessage(chatBox.value)) {
     chatBox.value = '';
   }
@@ -79,9 +77,9 @@ canvas.addEventListener('dblclick', (e)=>{
   tokens.slice().reverse().forEach((token) => {
     token.handleMenu(e);
   })
-})
+});
 
-canvas.addEventListener('wheel', map.handleZoom)
+canvas.addEventListener('wheel', map.handleZoom);
 
 document.addEventListener('click', (e) => {
   switch (e.target.id) {
@@ -97,8 +95,26 @@ document.addEventListener('click', (e) => {
       console.log("Cambiar imagen");
       break;
   }
-})
+});
 
+
+// Funcionamiento del toolbar
+toolbarMenu.forEach((option) => {
+  option.addEventListener('click', (e) => {
+    let slctdOpt = option.getAttribute('menu_option');
+
+    toolbarMenu.forEach((li) => li.classList.remove('active'));
+    option.classList.add('active');
+
+    Object.keys(map.toolbar).map((key) => {
+      if (key == slctdOpt) {
+        map.toolbar[key] = true;
+      }else{
+        map.toolbar[key] = false;
+      }
+    });
+  });
+});
 
 
 // Inicializacion del motor.

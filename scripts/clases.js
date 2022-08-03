@@ -17,6 +17,18 @@ class Map{
 
     this.tokens = tokens || [];
 
+    this.toolbar = {
+      select: true,
+      layers: false,
+      draw: false,
+      zoom: false,
+      distances: false,
+      fog: false,
+      turns: false,
+      rolls: false,
+      info: false,
+    }
+
     this.handleMovement = (e) => this.movementController(e);
     this.handleZoom = (e) => this.zoom(e);
   }
