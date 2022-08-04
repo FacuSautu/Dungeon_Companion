@@ -4,20 +4,151 @@
     <meta charset="utf-8">
     <title>Dungeon Companion</title>
 
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/css/style.css">
   </head>
   <body>
-    <div class="" id="toolbar">
-      <ul>
-        <li class="active" menu_option="select"><i class="fa-lg fa-solid fa-arrow-pointer"></i></li>
-        <li menu_option="layers"><i class="fa-lg fa-solid fa-cube"></i></li>
-        <li menu_option="draw"><i class="fa-lg fa-solid fa-paintbrush"></i></li>
-        <li menu_option="zoom"><i class="fa-lg fa-solid fa-magnifying-glass"></i></li>
-        <li menu_option="distances"><i class="fa-lg fa-solid fa-ruler-horizontal"></i></li>
-        <li menu_option="fog"><i class="fa-lg fa-solid fa-cloud"></i></li>
-        <li menu_option="turns"><i class="fa-lg fa-solid fa-clock"></i></li>
-        <li menu_option="rolls"><i class="fa-lg fa-solid fa-dice-d20"></i></li>
-        <li menu_option="info"><i class="fa-lg fa-solid fa-circle-question"></i></li>
+    <div id="toolbar">
+      <ul class="toolbar_menu">
+        <li class="toolbar_menu_option active" menu_option="select" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-arrow-pointer"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option" submenu_option="select_move"><i class="fa-lg fa-solid fa-arrow-pointer"></i>Select/Move</li>
+            <li class="toolbar_submenu_option" submenu_option="pan_view"><i class="fa-solid fa-arrows-up-down-left-right"></i>Pan View</li>
+          </ul>
+        </li>
+        <li class="toolbar_menu_option" menu_option="layers" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-cube"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option" submenu_option="map"><i class="fa-solid fa-location-dot"></i>Map & Background</li>
+            <li class="toolbar_submenu_option" submenu_option="objects"><i class="fa-lg fa-solid fa-cube"></i>Objects & Tokens</li>
+            <li class="toolbar_submenu_option" submenu_option="dm_layer"><i class="fa-solid fa-eye"></i>DM Info Overlay</li>
+          </ul>
+        </li>
+        <li class="toolbar_menu_option" menu_option="draw" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-paintbrush"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option" submenu_option="rect"><i class="fa-solid fa-square-full"></i>Draw Shape</li>
+            <li class="toolbar_submenu_option" submenu_option="circle"><i class="fa-solid fa-circle"></i>Circle</li>
+            <li class="toolbar_submenu_option" submenu_option="path"><i class="fa-lg fa-solid fa-paintbrush"></i>Freehand</li>
+            <li class="toolbar_submenu_option" submenu_option="polygon"><i class="fa-solid fa-draw-polygon"></i>Polygon/Line</li>
+            <li class="toolbar_submenu_option" submenu_option="text"><i class="fa-solid fa-text-height"></i>Text</li>
+            <li class="toolbar_submenu_option" submenu_option="clear"><i class="fa-solid fa-trash-can"></i>Clear Drawings</li>
+          </ul>
+        </li>
+        <li class="toolbar_menu_option" menu_option="zoom" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-magnifying-glass"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option" value="250">250%</li>
+            <li class="toolbar_submenu_option" value="240">240%</li>
+            <li class="toolbar_submenu_option" value="230">230%</li>
+            <li class="toolbar_submenu_option" value="220">220%</li>
+            <li class="toolbar_submenu_option" value="210">210%</li>
+            <li class="toolbar_submenu_option" value="200">200%</li>
+            <li class="toolbar_submenu_option" value="190">190%</li>
+            <li class="toolbar_submenu_option" value="180">180%</li>
+            <li class="toolbar_submenu_option" value="170">170%</li>
+            <li class="toolbar_submenu_option" value="160">160%</li>
+            <li class="toolbar_submenu_option" value="150">150%</li>
+            <li class="toolbar_submenu_option" value="140">140%</li>
+            <li class="toolbar_submenu_option" value="130">130%</li>
+            <li class="toolbar_submenu_option" value="120">120%</li>
+            <li class="toolbar_submenu_option" value="110">110%</li>
+            <li class="toolbar_submenu_option" value="100">100%</li>
+            <li class="toolbar_submenu_option" value="90">90%</li>
+            <li class="toolbar_submenu_option" value="80">80%</li>
+            <li class="toolbar_submenu_option" value="70">70%</li>
+            <li class="toolbar_submenu_option" value="60">60%</li>
+            <li class="toolbar_submenu_option" value="50">50%</li>
+            <li class="toolbar_submenu_option" value="40">40%</li>
+            <li class="toolbar_submenu_option" value="30">30%</li>
+            <li class="toolbar_submenu_option" value="20">20%</li>
+            <li class="toolbar_submenu_option" value="10">10%</li>
+          </ul>
+        </li>
+        <li class="toolbar_menu_option" menu_option="measure" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-ruler-horizontal"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option" submenu_option="snap_center"><i class="fa-lg fa-solid fa-ruler-horizontal"></i>Snap to center</li>
+            <li class="toolbar_submenu_option" submenu_option="snap_corner"><i class="fa-solid fa-arrow-up-right-from-square"></i>Snap to corner</li>
+            <li class="toolbar_submenu_option" submenu_option="no_snap"><i class="fa-solid fa-ruler-vertical"></i>No snap</li>
+          </ul>
+        </li>
+        <li class="toolbar_menu_option" menu_option="fog" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-cloud"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option" submenu_option="reveal"><i class="fa-solid fa-eye"></i>Reveal Areas</li>
+            <li class="toolbar_submenu_option" submenu_option="polygon_reveal"><i class="fa-solid fa-draw-polygon"></i>Polygon Reveal</li>
+            <li class="toolbar_submenu_option" submenu_option="hide"><i class="fa-lg fa-solid fa-cloud"></i>Hide Areas</li>
+            <li class="toolbar_submenu_option" submenu_option="reset"><i class="fa-solid fa-trash-can"></i>Reset Fog</li>
+          </ul>
+        </li>
+        <li class="toolbar_menu_option" menu_option="turns" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-clock"></i>
+        </li>
+        <li class="toolbar_menu_option" menu_option="rolls" submenu_option="">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-dice-d20"></i>
+          <ul class="toolbar_submenu">
+            <li class="toolbar_submenu_option">
+              <div>D4</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+            <li class="toolbar_submenu_option">
+              <div>D6</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+            <li class="toolbar_submenu_option">
+              <div>D8</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+            <li class="toolbar_submenu_option">
+              <div>D10</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+            <li class="toolbar_submenu_option">
+              <div>D12</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+            <li class="toolbar_submenu_option">
+              <div>D20</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+            <li class="toolbar_submenu_option">
+              <div>D100</div>
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </li>
+          </ul>
+        </li>
+        <!-- <li menu_option="info">
+          <i class="toolbar_menu_icon fa-lg fa-solid fa-circle-question"></i>
+        </li> -->
       </ul>
     </div>
 

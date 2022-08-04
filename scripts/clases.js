@@ -16,21 +16,92 @@ class Map{
     this.colSize = this.canvas.width/this.grid[1];
 
     this.tokens = tokens || [];
+    this.drawings = [];
 
-    this.toolbar = {
-      select: true,
-      layers: false,
-      draw: false,
-      zoom: false,
-      distances: false,
-      fog: false,
-      turns: false,
-      rolls: false,
-      info: false,
+    this.utilities = {
+      select: {
+        active: true,
+        options: {
+          select_move: true,
+          pan_view: false
+        }
+      },
+      layers: {
+        active: false,
+        options: {
+          map: false,
+          objects: true,
+          dm_layer: false
+        }
+      },
+      draw: {
+        active: false,
+        options: {
+          rect: false,
+          circle: false,
+          path: false,
+          polygon: false,
+          text: false,
+          clear: false
+        }
+      },
+      measure: {
+        active: false,
+        options: {
+          snap_center: false,
+          snap_corner: false,
+          no_snap: false
+        }
+      },
+      fog: {
+        active: false,
+        options: {
+          reveal: false,
+          polygon_reveal: false,
+          hide: false,
+          reset: false
+        }
+      }
     }
 
-    this.handleMovement = (e) => this.movementController(e);
+    this.handleMouseDown = (e) => {
+      this.movementController(e);
+    };
+    this.handleMouseMove = (e) => {
+      this.movementController(e);
+    };
+    this.handleMouseUp = (e) => {
+      this.movementController(e);
+    };
+    this.handleMouseLeave = (e) => {
+      this.movementController(e);
+    };
     this.handleZoom = (e) => this.zoom(e);
+  }
+
+  setUtilityOpt(toChange, utility, option){
+    switch (toChange) {
+      case 'utility':
+        Object.keys(this.utilities).map((key) => {
+          if (key == utility) {
+            map.utilities[key].active = true;
+          }else{
+            map.utilities[key].active = false;
+          }
+        });
+        break;
+
+
+      case 'utility_opt':
+        Object.keys(this.utilities[utility]['options']).map((key) => {
+          if (key == option) {
+            this.utilities[utility]['options'][key] = true;
+          }else {
+            this.utilities[utility]['options'][key] = false;
+          }
+        });
+        break;
+    }
   }
 
   renderGrid(){
@@ -56,7 +127,7 @@ class Map{
     this.tokens.push(token);
   }
 
-  zoom(event){
+  zoom(event, value){
     if (event.type == 'wheel' && event.ctrlKey) {
       event.preventDefault();
       if (event.wheelDelta > 0) {
@@ -64,11 +135,13 @@ class Map{
       }else {
         this.scale-=0.1;
       }
+    }else if (value) {
+      this.scale = value;
     }
   }
 
   movementController(event){
-    if (event.type == 'mousedown' && event.ctrlKey) {
+    if (event.type == 'mousedown' && (this.toolbar.select.options.pan_view || event.ctrlKey)) {
       this.canvas.style.cursor = 'move';
       this.mousedown = true;
       this.clickOffsetX = event.clientX;

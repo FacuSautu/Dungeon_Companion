@@ -3,7 +3,8 @@ const canvas = document.getElementById('canvas');
 const chatLog = document.getElementById('messages');
 const chatBtn = document.getElementById('chatBtn');
 const chatBox = document.getElementById('chatInput');
-const toolbarMenu = document.querySelectorAll('#toolbar ul li');
+const toolbarMenu = document.querySelectorAll('.toolbar_menu_option');
+const toolbarSubmenu = document.querySelectorAll('.toolbar_submenu_option');
 
 // Instanciación de objetos.
 const PJs = [new HojaPJ(garret), new HojaPJ(leosariph)];
@@ -52,26 +53,26 @@ canvas.addEventListener('mousedown', (e)=>{
   });
 
   if (clickCanvas) {
-    map.movementController(e);
+    map.handleMouseDown(e);
   }
 });
 canvas.addEventListener('mousemove', (e)=>{
   tokens.forEach((token) => {
     token.handleMovement(e);
   });
-  map.movementController(e);
+  map.handleMouseMove(e);
 });
 canvas.addEventListener('mouseup', (e)=>{
   tokens.forEach((token) => {
     token.handleMovement(e);
   });
-  map.movementController(e);
+  map.handleMouseUp(e);
 });
 canvas.addEventListener('mouseleave', (e)=>{
   tokens.forEach((token) => {
     token.handleMovement(e);
   });
-  map.movementController(e);
+  map.handleMouseLeave(e);
 });
 canvas.addEventListener('dblclick', (e)=>{
   tokens.slice().reverse().forEach((token) => {
@@ -99,23 +100,42 @@ document.addEventListener('click', (e) => {
 
 
 // Funcionamiento del toolbar
-toolbarMenu.forEach((option) => {
-  option.addEventListener('click', (e) => {
-    let slctdOpt = option.getAttribute('menu_option');
+toolbarMenu.forEach((menuOption) => {
+  menuOption.addEventListener('click', (e) => {
+    const slctdMenuOpt = menuOption.getAttribute('menu_option');                // Variable con el indicador de la opcion elegida.
+    const canBeActive = ['select', 'draw', 'measure', 'fog'];                   // Array de opciones que pueden estar marcadas como activas.
 
-    toolbarMenu.forEach((li) => li.classList.remove('active'));
-    option.classList.add('active');
+    // Seteo de elemento activo del menu.
+    if (canBeActive.includes(slctdMenuOpt)) {
+      toolbarMenu.forEach((li) => li.classList.remove('active'));
+      menuOption.classList.add('active');
+    }
 
-    Object.keys(map.toolbar).map((key) => {
-      if (key == slctdOpt) {
-        map.toolbar[key] = true;
-      }else{
-        map.toolbar[key] = false;
-      }
-    });
+    // Cambio de valores en el objeto Map.
+    map.setUtilityOpt('utility', slctdMenuOpt);
   });
 });
 
+toolbarSubmenu.forEach((submenuOption) => {
+  submenuOption.addEventListener('click', (e) => {
+    const parentOption = submenuOption.parentElement.parentElement;                               // Nodo padre del submenu.
+    const slctdMenuOpt = submenuOption.parentElement.parentElement.getAttribute('menu_option');   // Valor indicador de la opcion elegida en el menu.
+    const slctdSubmenuOpt = submenuOption.getAttribute('submenu_option');                         // Valor indicador de la opcion elegida en el submenu.
+
+    switch (slctdMenuOpt) {
+      case 'select':
+      case 'draw':
+        map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
+        parentOption.setAttribute('submenu_option', slctdSubmenuOpt);
+        break;
+        
+      case 'zoom':
+        const zoomValue = Number(submenuOption.getAttribute('value'))/100;
+        map.zoom('x', zoomValue);
+        break;
+    }
+  });
+});
 
 // Inicializacion del motor.
 engine.start();
