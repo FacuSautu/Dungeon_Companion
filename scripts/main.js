@@ -80,7 +80,7 @@ canvas.addEventListener('dblclick', (e)=>{
   })
 });
 
-canvas.addEventListener('wheel', map.handleZoom);
+canvas.addEventListener('wheel', map.handleWheel);
 
 document.addEventListener('click', (e) => {
   switch (e.target.id) {
@@ -128,7 +128,7 @@ toolbarSubmenu.forEach((submenuOption) => {
         map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
         parentOption.setAttribute('submenu_option', slctdSubmenuOpt);
         break;
-        
+
       case 'zoom':
         const zoomValue = Number(submenuOption.getAttribute('value'))/100;
         map.zoom('x', zoomValue);
@@ -136,6 +136,8 @@ toolbarSubmenu.forEach((submenuOption) => {
     }
   });
 });
+
+
 
 // Inicializacion del motor.
 engine.start();

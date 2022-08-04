@@ -64,19 +64,34 @@ class Map{
       }
     }
 
+    // Handlers de eventos.
     this.handleMouseDown = (e) => {
-      this.movementController(e);
+      if (this.utilities.select.active) {
+        this.movementController(e);
+      }else if (this.utilities.draw.active) {
+        this.drawShapes(e);
+      }
     };
+
     this.handleMouseMove = (e) => {
-      this.movementController(e);
+      if (this.utilities.select.active) {
+        this.movementController(e);
+      }
     };
+
     this.handleMouseUp = (e) => {
-      this.movementController(e);
+      if (this.utilities.select.active) {
+        this.movementController(e);
+      }
     };
+
     this.handleMouseLeave = (e) => {
-      this.movementController(e);
+      if (this.utilities.select.active) {
+        this.movementController(e);
+      }
     };
-    this.handleZoom = (e) => this.zoom(e);
+
+    this.handleWheel = (e) => this.zoom(e);
   }
 
   setUtilityOpt(toChange, utility, option){
@@ -141,7 +156,7 @@ class Map{
   }
 
   movementController(event){
-    if (event.type == 'mousedown' && (this.toolbar.select.options.pan_view || event.ctrlKey)) {
+    if (event.type == 'mousedown' && (this.utilities.select.options.pan_view || event.ctrlKey)) {
       this.canvas.style.cursor = 'move';
       this.mousedown = true;
       this.clickOffsetX = event.clientX;
@@ -155,6 +170,14 @@ class Map{
       this.mousedown = false;
       this.canvas.style.cursor = 'auto';
     }
+  }
+
+  drawShapes(event){
+    let rect1 = new Path2D();
+    let rect1StartX = event.offsetX;
+    let rect1StartY = event.offsetY;
+    rect1.rect(rect1StartX, rect1StartY, 100, 100);
+    this.drawings.push(rect1);
   }
 
   update(){
@@ -197,6 +220,7 @@ class Map{
       this.ctx.arc(x, y, token.radius, 0, 2*Math.PI);
       this.ctx.fill();
 
+      // Visualizacion del area de movimiento del token
       if (token.showMovementArea) {
         let movementRadius = (token.hojaPJ.speed/5) * this.rowSize;
 
@@ -205,7 +229,11 @@ class Map{
         this.ctx.arc(token.x, token.y, movementRadius, 0, 2*Math.PI);
         this.ctx.stroke();
       }
-    })
+    });
+
+    this.drawings.forEach((drawing) => {
+      this.ctx.stroke(drawing);
+    });
   }
 }
 
