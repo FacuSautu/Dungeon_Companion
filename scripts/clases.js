@@ -47,7 +47,11 @@ class Map{
         variables: {
           shape: undefined,
           startX: 0,
-          startY: 0
+          startY: 0,
+          color: 'black',
+          weight: '2px',
+          font: 'Arial',
+          text: ''
         }
       },
       measure: {
@@ -182,22 +186,47 @@ class Map{
   }
 
   drawShapes(event){
-      // Evento de mousedown
-    if (event.type == 'mousedown' && this.utilities.draw.active) {
-      this.utilities.draw.variables.startX = event.offsetX;
-      this.utilities.draw.variables.startY = event.offsetY;
 
-      this.clickOffsetX = event.clientX;
-      this.clickOffsetY = event.clientY;
+    if (event.type == 'mousedown' && this.utilities.draw.active) {              // Evento de mousedown.
+      if (!this.utilities.draw.options.polygon) {                               // Si la opcion de draw no es hacer un poligono.
+        this.utilities.draw.variables.startX = event.offsetX;
+        this.utilities.draw.variables.startY = event.offsetY;
 
-      this.mousedown = true;
+        this.clickOffsetX = event.clientX;
+        this.clickOffsetY = event.clientY;
 
-      // Evento de mousemove
-    }else if (event.type == 'mousemove' && this.mousedown) {
+        this.mousedown = true;
+
+      }else if (this.utilities.draw.options.polygon && event.button == 0) {     // Si se quiere dibujar un poligono y se apreto el click izquierdo.
+        if (!this.utilities.draw.variables.shape) {
+          this.utilities.draw.variables.shape = new Path2D();
+
+          this.utilities.draw.variables.shape.moveTo(event.offsetX, event.offsetY);
+          this.utilities.draw.variables.shape.lineTo(event.offsetX+1, event.offsetY+1);
+        }else if (this.utilities.draw.variables.shape) {
+
+          this.utilities.draw.variables.shape.lineTo(event.offsetX, event.offsetY);
+
+        }
+      }else if (this.utilities.draw.options.polygon && event.button == 2) {     // Si se apreto el boton derecho y se esta en la opcion de poligono.
+        this.mousedown = false;
+        this.drawings.push(this.utilities.draw.variables.shape);
+        this.utilities.draw.variables.shape = undefined;
+        this.utilities.draw.variables.startX = 0;
+        this.utilities.draw.variables.startY = 0;
+      }else if (this.utilities.draw.options.text && event.button == 0) {        // Si se quiere agregar texto.
+        this.utilities.draw.variables.shape = new Path2D();
+        this.utilities.draw.variables.startX = event.clienx;
+        this.utilities.draw.variables.startY = event.clienx;
+
+        this.utilities.draw.variables.shape.fillText('Hola Mundo', this.utilities.draw.variables.startX, this.utilities.draw.variables.startY);
+      }
+
+    }else if (event.type == 'mousemove' && this.mousedown) {                    // Evento de mousemove
       let startX = this.utilities.draw.variables.startX;
       let startY = this.utilities.draw.variables.startY;
-      let endX = event.clientX - this.canvas.offsetLeft;
-      let endY = event.clientY - this.canvas.offsetTop;
+      let endX = (event.clientX - this.canvas.offsetLeft)/this.scale;
+      let endY = (event.clientY - this.canvas.offsetTop)/this.scale;
       let distanceX = (event.clientX - this.clickOffsetX)/this.scale;
       let distanceY = (event.clientY - this.clickOffsetY)/this.scale;
       let distance = Math.floor(Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)));
@@ -233,27 +262,16 @@ class Map{
         this.utilities.draw.variables.startX = endX;
         this.utilities.draw.variables.startY = endY;
 
-        // Si se quiere dibujar un poligono.
-      }else if (this.utilities.draw.options.polygon) {
-        if (!this.utilities.draw.variables.shape) {
-          this.utilities.draw.variables.shape = new Path2D();
-
-          this.utilities.draw.variables.shape.moveTo(this.utilities.draw.variables.startX, this.utilities.draw.variables.startY);
-          this.utilities.draw.variables.shape.lineTo(this.utilities.draw.variables.startX+1, this.utilities.draw.variables.startY+1);
-        }else {
-
-          this.utilities.draw.variables.shape.lineTo(this.utilities.draw.variables.startX, this.utilities.draw.variables.startY);
-
-        }
       }
 
-      // Evento de mouseup
-    }else if (event.type == 'mouseup' && this.mousedown && !this.utilities.draw.options.polygon) {
+    }else if (event.type == 'mouseup' && this.mousedown && !this.utilities.draw.options.polygon) {  // Evento de mouseup
       this.mousedown = false;
       this.drawings.push(this.utilities.draw.variables.shape);
       this.utilities.draw.variables.shape = undefined;
       this.utilities.draw.variables.startX = 0;
       this.utilities.draw.variables.startY = 0;
+    }else if (event.type == 'keypress' && this.utilities.draw.active) {
+
     }
   }
 

@@ -55,7 +55,6 @@ canvas.addEventListener('mousedown', (e)=>{
   if (clickCanvas) {
     map.handleMouseDown(e);
   }
-  console.log(e);
 });
 canvas.addEventListener('mousemove', (e)=>{
   tokens.forEach((token) => {
@@ -80,6 +79,7 @@ canvas.addEventListener('dblclick', (e)=>{
     token.handleMenu(e);
   })
 });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 canvas.addEventListener('wheel', map.handleWheel);
 
