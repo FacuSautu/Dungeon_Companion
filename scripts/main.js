@@ -55,6 +55,7 @@ canvas.addEventListener('mousedown', (e)=>{
   if (clickCanvas) {
     map.handleMouseDown(e);
   }
+  console.log(e);
 });
 canvas.addEventListener('mousemove', (e)=>{
   tokens.forEach((token) => {
@@ -120,7 +121,9 @@ toolbarSubmenu.forEach((submenuOption) => {
   submenuOption.addEventListener('click', (e) => {
     const parentOption = submenuOption.parentElement.parentElement;                               // Nodo padre del submenu.
     const slctdMenuOpt = submenuOption.parentElement.parentElement.getAttribute('menu_option');   // Valor indicador de la opcion elegida en el menu.
+    const menuIcon = parentOption.children[0];
     const slctdSubmenuOpt = submenuOption.getAttribute('submenu_option');                         // Valor indicador de la opcion elegida en el submenu.
+    const submenuIcon = submenuOption.firstChild.cloneNode(true);
 
     switch (slctdMenuOpt) {
       case 'select':
@@ -137,6 +140,9 @@ toolbarSubmenu.forEach((submenuOption) => {
 
     toolbarSubmenu.forEach((li) => li.classList.remove('active'));
     submenuOption.classList.add('active');
+    if (submenuIcon.hasAttribute('can_be_selected')) {
+      menuIcon.replaceWith(submenuIcon);
+    }
   });
 });
 

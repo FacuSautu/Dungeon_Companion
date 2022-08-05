@@ -182,36 +182,43 @@ class Map{
   }
 
   drawShapes(event){
-    // Evento de mousedown
+      // Evento de mousedown
     if (event.type == 'mousedown' && this.utilities.draw.active) {
       this.utilities.draw.variables.startX = event.offsetX;
       this.utilities.draw.variables.startY = event.offsetY;
 
       this.clickOffsetX = event.clientX;
       this.clickOffsetY = event.clientY;
-      
+
       this.mousedown = true;
 
-    // Evento de mousemove
+      // Evento de mousemove
     }else if (event.type == 'mousemove' && this.mousedown) {
       let startX = this.utilities.draw.variables.startX;
       let startY = this.utilities.draw.variables.startY;
-      let endX = (event.clientX - this.clickOffsetX)/this.scale;
-      let endY = (event.clientY - this.clickOffsetY)/this.scale;
-      let distance = Math.floor(Math.sqrt(Math.pow(endX, 2) + Math.pow(endY, 2)));
+      let endX = event.clientX - this.canvas.offsetLeft;
+      let endY = event.clientY - this.canvas.offsetTop;
+      let distanceX = (event.clientX - this.clickOffsetX)/this.scale;
+      let distanceY = (event.clientY - this.clickOffsetY)/this.scale;
+      let distance = Math.floor(Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)));
 
+        // Si se quiere dibujar un rectangulo.
       if (this.utilities.draw.options.rect) {
         let rectangle = new Path2D();
 
-        rectangle.rect(startX, startY, endX, endY);
-        
+        rectangle.rect(startX, startY, distanceX, distanceY);
+
         this.utilities.draw.variables.shape = rectangle;
+
+        // Si se quiere dibujar un circulo
       }else if (this.utilities.draw.options.circle) {
         let circle = new Path2D();
 
         circle.arc(startX, startY, distance, 0, Math.PI*2);
 
         this.utilities.draw.variables.shape = circle;
+
+        // Si se quiere dibujar a mano libre.
       }else if (this.utilities.draw.options.path){
         if (!this.utilities.draw.variables.shape) {
           this.utilities.draw.variables.shape = new Path2D();
@@ -219,16 +226,29 @@ class Map{
 
         let line = new Path2D();
         line.moveTo(startX, startY);
-        line.lineTo(event.offsetX, event.offsetY);
+        line.lineTo(endX, endY);
 
         this.utilities.draw.variables.shape.addPath(line);
 
-        this.utilities.draw.variables.startX = event.clientX;
-        this.utilities.draw.variables.startY = event.clientY;
+        this.utilities.draw.variables.startX = endX;
+        this.utilities.draw.variables.startY = endY;
+
+        // Si se quiere dibujar un poligono.
+      }else if (this.utilities.draw.options.polygon) {
+        if (!this.utilities.draw.variables.shape) {
+          this.utilities.draw.variables.shape = new Path2D();
+
+          this.utilities.draw.variables.shape.moveTo(this.utilities.draw.variables.startX, this.utilities.draw.variables.startY);
+          this.utilities.draw.variables.shape.lineTo(this.utilities.draw.variables.startX+1, this.utilities.draw.variables.startY+1);
+        }else {
+
+          this.utilities.draw.variables.shape.lineTo(this.utilities.draw.variables.startX, this.utilities.draw.variables.startY);
+
+        }
       }
 
-    // Evento de mouseup
-    }else if (event.type == 'mouseup' && this.mousedown) {
+      // Evento de mouseup
+    }else if (event.type == 'mouseup' && this.mousedown && !this.utilities.draw.options.polygon) {
       this.mousedown = false;
       this.drawings.push(this.utilities.draw.variables.shape);
       this.utilities.draw.variables.shape = undefined;
