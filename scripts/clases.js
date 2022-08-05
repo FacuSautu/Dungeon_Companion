@@ -43,6 +43,11 @@ class Map{
           polygon: false,
           text: false,
           clear: false
+        },
+        variables: {
+          shape: undefined,
+          startX: 0,
+          startY: 0
         }
       },
       measure: {
@@ -76,12 +81,16 @@ class Map{
     this.handleMouseMove = (e) => {
       if (this.utilities.select.active) {
         this.movementController(e);
+      }else if (this.utilities.draw.active) {
+        this.drawShapes(e);
       }
     };
 
     this.handleMouseUp = (e) => {
       if (this.utilities.select.active) {
         this.movementController(e);
+      }else if (this.utilities.draw.active) {
+        this.drawShapes(e);
       }
     };
 
@@ -173,11 +182,59 @@ class Map{
   }
 
   drawShapes(event){
-    let rect1 = new Path2D();
-    let rect1StartX = event.offsetX;
-    let rect1StartY = event.offsetY;
-    rect1.rect(rect1StartX, rect1StartY, 100, 100);
-    this.drawings.push(rect1);
+    // Evento de mousedown
+    if (event.type == 'mousedown' && this.utilities.draw.active) {
+      this.utilities.draw.variables.startX = event.offsetX;
+      this.utilities.draw.variables.startY = event.offsetY;
+
+      this.clickOffsetX = event.clientX;
+      this.clickOffsetY = event.clientY;
+      
+      this.mousedown = true;
+
+    // Evento de mousemove
+    }else if (event.type == 'mousemove' && this.mousedown) {
+      let startX = this.utilities.draw.variables.startX;
+      let startY = this.utilities.draw.variables.startY;
+      let endX = (event.clientX - this.clickOffsetX)/this.scale;
+      let endY = (event.clientY - this.clickOffsetY)/this.scale;
+      let distance = Math.floor(Math.sqrt(Math.pow(endX, 2) + Math.pow(endY, 2)));
+
+      if (this.utilities.draw.options.rect) {
+        let rectangle = new Path2D();
+
+        rectangle.rect(startX, startY, endX, endY);
+        
+        this.utilities.draw.variables.shape = rectangle;
+      }else if (this.utilities.draw.options.circle) {
+        let circle = new Path2D();
+
+        circle.arc(startX, startY, distance, 0, Math.PI*2);
+
+        this.utilities.draw.variables.shape = circle;
+      }else if (this.utilities.draw.options.path){
+        if (!this.utilities.draw.variables.shape) {
+          this.utilities.draw.variables.shape = new Path2D();
+        }
+
+        let line = new Path2D();
+        line.moveTo(startX, startY);
+        line.lineTo(event.offsetX, event.offsetY);
+
+        this.utilities.draw.variables.shape.addPath(line);
+
+        this.utilities.draw.variables.startX = event.clientX;
+        this.utilities.draw.variables.startY = event.clientY;
+      }
+
+    // Evento de mouseup
+    }else if (event.type == 'mouseup' && this.mousedown) {
+      this.mousedown = false;
+      this.drawings.push(this.utilities.draw.variables.shape);
+      this.utilities.draw.variables.shape = undefined;
+      this.utilities.draw.variables.startX = 0;
+      this.utilities.draw.variables.startY = 0;
+    }
   }
 
   update(){
@@ -231,6 +288,9 @@ class Map{
       }
     });
 
+    if(this.utilities.draw.variables.shape){
+      this.ctx.stroke(this.utilities.draw.variables.shape);
+    }
     this.drawings.forEach((drawing) => {
       this.ctx.stroke(drawing);
     });

@@ -37,14 +37,14 @@ chatBox.addEventListener('keypress', (e) =>{
       chatBox.value='';
     }
   }
-})
+});
 
 // Eventos para manejar el movimiento de los token.
 canvas.addEventListener('mousedown', (e)=>{
   let clickCanvas = true;
   let tokenHolded = false;
   tokens.slice().reverse().forEach((token) => {
-    if(!tokenHolded){
+    if(!tokenHolded && map.utilities.select.active){
       if(token.handleMovement(e)){
         clickCanvas = false;
         tokenHolded = true;
@@ -134,6 +134,9 @@ toolbarSubmenu.forEach((submenuOption) => {
         map.zoom('x', zoomValue);
         break;
     }
+
+    toolbarSubmenu.forEach((li) => li.classList.remove('active'));
+    submenuOption.classList.add('active');
   });
 });
 

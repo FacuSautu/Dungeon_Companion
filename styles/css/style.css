@@ -67,7 +67,7 @@ body {
   width: 250px;
   display: none;
   position: absolute;
-  left: 150%;
+  left: 100%;
   top: 0;
   background-color: white;
   border: 1px solid #999;
@@ -88,7 +88,7 @@ body {
   padding: 3px;
 }
 
-#toolbar .toolbar_menu .toolbar_menu_option .toolbar_submenu .toolbar_submenu_option:hover, #toolbar .toolbar_menu .toolbar_menu_option .toolbar_submenu .toolbar_submenu_option:active {
+#toolbar .toolbar_menu .toolbar_menu_option .toolbar_submenu .toolbar_submenu_option:hover, #toolbar .toolbar_menu .toolbar_menu_option .toolbar_submenu .toolbar_submenu_option.active {
   color: #333;
   background-color: #54c3e8;
   cursor: pointer;
