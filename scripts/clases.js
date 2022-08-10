@@ -6,17 +6,27 @@ class Map{
     this.canvas.height = height;
     this.ctx = canvas.getContext('2d');
 
+    this.layers = {
+      'map&background': document.createElement('canvas'),
+      'objects&tokens': document.createElement('canvas'),
+      'dmInfo': document.createElement('canvas')
+    };
+    Object.keys(this.layers).forEach((layer) => {
+      this.layers[layer].width = this.canvas.width;
+      this.layers[layer].height = this.canvas.height;
+    });
+    this.activeLayer = this.layers['objects&tokens'];
+
     this.scale = 1;
     this.mousedown = false;
     this.clickOffsetX = 0;
     this.clickOffsetY = 0;
 
-    this.grid = gridSize || [20, 20];
-    this.rowSize = this.canvas.height/this.grid[0];
-    this.colSize = this.canvas.width/this.grid[1];
+    this.gridSize = gridSize || 60;
 
     this.tokens = tokens || [];
     this.drawings = [];
+    this.images = [];
 
     this.utilities = {
       select: {
@@ -139,12 +149,9 @@ class Map{
     this.ctx.lineWidth = 1;
     this.ctx.beginPath();
 
-    for (var i = 0; i < this.canvas.height; i+=this.rowSize) {
+    for (var i = 0; i < this.canvas.height; i+=this.gridSize) {
       this.ctx.moveTo(0, i);
       this.ctx.lineTo(this.canvas.height, i);
-    }
-
-    for (var i = 0; i <= this.canvas.width; i+=this.colSize) {
       this.ctx.moveTo(i, 0);
       this.ctx.lineTo(i, this.canvas.width);
     }
@@ -153,6 +160,20 @@ class Map{
 
   addToken(token){
     this.tokens.push(token);
+  }
+
+  addImage(img){
+    let mapImage = {
+      img: img,
+      x: 0,
+      y: 0
+    }
+    this.images.push(mapImage);
+  }
+
+  setActiveLayer(layer){
+    console.log(layer);
+    this.activeLayer = this.layers[layer];
   }
 
   zoom(event, value){
@@ -288,8 +309,8 @@ class Map{
 
       // Snap del token a la grilla
       if (token.dropped) {
-        x = ((Math.trunc(token.x/this.rowSize))*this.rowSize)+(this.rowSize/2);
-        y = ((Math.trunc(token.y/this.colSize))*this.colSize)+(this.colSize/2);
+        x = ((Math.trunc(token.x/this.gridSize))*this.gridSize)+(this.gridSize/2);
+        y = ((Math.trunc(token.y/this.gridSize))*this.gridSize)+(this.gridSize/2);
         token.x = x;
         token.y = y;
         token.dropped = false;
@@ -315,9 +336,9 @@ class Map{
       this.ctx.arc(x, y, token.radius, 0, 2*Math.PI);
       this.ctx.fill();
 
-      // Visualizacion del area de movimiento del token
+      // Visualizacion del area de movimiento del token.
       if (token.showMovementArea) {
-        let movementRadius = (token.hojaPJ.speed/5) * this.rowSize;
+        let movementRadius = (token.hojaPJ.speed/5) * this.gridSize;
 
         this.ctx.beginPath();
         this.ctx.fillStyle = "rgb(194, 215, 18)";
@@ -326,11 +347,17 @@ class Map{
       }
     });
 
+    // Visualizacion de los dibujos.
     if(this.utilities.draw.variables.shape){
       this.ctx.stroke(this.utilities.draw.variables.shape);
     }
     this.drawings.forEach((drawing) => {
       this.ctx.stroke(drawing);
+    });
+
+    // Visualizacion de las imagenes.
+    this.images.forEach((mapImg) => {
+      this.ctx.drawImage(mapImg.img, 0, 0, mapImg.img.width, mapImg.img.height);
     });
   }
 }

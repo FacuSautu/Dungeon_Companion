@@ -12,7 +12,7 @@ const tokens = [
   new Token(0, 20, 20, 30, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
   new Token(1, 100, 100, 30, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
 ];
-const map = new Map(canvas, 1200, 1200, [20, 20], tokens);
+const map = new Map(canvas, 1200, 1200, 60, tokens);
 map.renderGrid();
 map.update();
 
@@ -24,6 +24,7 @@ const chat = new Chat(user, chatLog);
 
 
 // Definición de Event Listeners.
+
 // Evento para enviar mensaje por chat clickeando el boton de "Send".
 chatBtn.addEventListener('click', () =>{
   if (chat.sendMessage(chatBox.value)) {
@@ -79,9 +80,34 @@ canvas.addEventListener('dblclick', (e)=>{
     token.handleMenu(e);
   })
 });
+
+// Evento para envitar el boton derecho en el canvas.
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
+// Evento para el zoom en el canvas.
 canvas.addEventListener('wheel', map.handleWheel);
+
+// Eventos para poder dropear una imagen en el canvas y que aparezca.
+canvas.addEventListener('dragover', (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+});
+canvas.addEventListener('drop', (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  const reader = new FileReader();
+  const image = new Image();
+  const file = e.dataTransfer.files[0];
+
+  reader.onload = (e) => {
+    image.src = event.target.result;
+  }
+  reader.readAsDataURL(file);
+
+  map.addImage(image);
+});
 
 document.addEventListener('click', (e) => {
   switch (e.target.id) {
@@ -130,6 +156,10 @@ toolbarSubmenu.forEach((submenuOption) => {
       case 'draw':
         map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
         parentOption.setAttribute('submenu_option', slctdSubmenuOpt);
+        break;
+
+      case 'layers':
+        map.setActiveLayer(slctdSubmenuOpt);
         break;
 
       case 'zoom':
