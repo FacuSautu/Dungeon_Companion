@@ -12,7 +12,7 @@ const tokens = [
   new Token(0, 20, 20, 30, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
   new Token(1, 100, 100, 30, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
 ];
-const map = new Map(canvas, 1200, 1200, 60, tokens);
+const map = new Map(canvas, 2000, 2000, 60, tokens);
 map.renderGrid();
 map.update();
 
@@ -106,7 +106,8 @@ canvas.addEventListener('drop', (e) => {
   }
   reader.readAsDataURL(file);
 
-  map.addImage(image);
+  const mapImg = new mapImage(image, 800, 800);
+  map.addImage(mapImg);
 });
 
 document.addEventListener('click', (e) => {

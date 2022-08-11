@@ -2,8 +2,8 @@
 class Map{
   constructor(canvas, width, height, gridSize, tokens){
     this.canvas = canvas;
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas.width = Math.ceil(width/gridSize)*gridSize;
+    this.canvas.height = Math.ceil(height/gridSize)*gridSize;
     this.ctx = canvas.getContext('2d');
 
     this.layers = {
@@ -144,6 +144,7 @@ class Map{
 
   renderGrid(){
     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    this.ctx.strokeStyle = 'black';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.lineWidth = 1;
@@ -163,12 +164,7 @@ class Map{
   }
 
   addImage(img){
-    let mapImage = {
-      img: img,
-      x: 0,
-      y: 0
-    }
-    this.images.push(mapImage);
+    this.images.push(img);
   }
 
   setActiveLayer(layer){
@@ -357,8 +353,48 @@ class Map{
 
     // Visualizacion de las imagenes.
     this.images.forEach((mapImg) => {
-      this.ctx.drawImage(mapImg.img, 0, 0, mapImg.img.width, mapImg.img.height);
+      let originX = mapImg.x-(mapImg.img.width/2);
+      let originY = mapImg.y-(mapImg.img.height/2);
+
+      this.ctx.drawImage(mapImg.img, originX, originY, mapImg.img.width, mapImg.img.height);
+      if (mapImg.gizmoState) {
+        let topLeft = [originX, originY];
+        let topRight = [originX+mapImg.img.width, originY];
+        let bottomLeft = [originX, originY+mapImg.img.height];
+        let bottomRight = [originX+mapImg.img.width, originY+mapImg.img.height];
+
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = "#54c3e8";
+
+        this.ctx.arc(topLeft[0], topLeft[1], 10, 0, Math.PI*2);
+        // this.ctx.arc(topRight[0], topRight[1], 10, 0, Math.PI*2);
+        // this.ctx.arc(bottomLeft[0], bottomLeft[1], 10, 0, Math.PI*2);
+        // this.ctx.arc(bottomRight[0], bottomRight[1], 10, 0, Math.PI*2);
+
+        this.ctx.fill();
+      }
     });
+  }
+}
+
+
+
+// Clase de imagen
+class mapImage{
+  constructor(img, x, y){
+    this.img = img;
+    this.x = x;
+    this.y = y;
+
+    this.gizmoState = false;
+  }
+
+  toggleGizmos(){
+    this.gizmoState = (this.gizmoState) ? false : true;
+  }
+
+  transform(){
+
   }
 }
 
