@@ -143,9 +143,7 @@ class Map{
   }
 
   renderGrid(){
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
     this.ctx.strokeStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.lineWidth = 1;
     this.ctx.beginPath();
@@ -296,7 +294,10 @@ class Map{
     this.ctx.clearRect(0,0,canvas.width,canvas.height);
     this.canvas.style.transform = `scale(${this.scale})`;
 
+    this.ctx.globalCompositeOperation='source-over';
+
     this.renderGrid();
+
 
     // Dibujado de los tokens
     this.tokens.forEach((token) => {
@@ -355,24 +356,28 @@ class Map{
     this.images.forEach((mapImg) => {
       let originX = mapImg.x-(mapImg.img.width/2);
       let originY = mapImg.y-(mapImg.img.height/2);
+      let imgWidth = this.canvas.width;
+      let imgHeight = this.canvas.height;
 
-      this.ctx.drawImage(mapImg.img, originX, originY, mapImg.img.width, mapImg.img.height);
-      if (mapImg.gizmoState) {
-        let topLeft = [originX, originY];
-        let topRight = [originX+mapImg.img.width, originY];
-        let bottomLeft = [originX, originY+mapImg.img.height];
-        let bottomRight = [originX+mapImg.img.width, originY+mapImg.img.height];
+      this.ctx.globalCompositeOperation='destination-over';
 
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = "#54c3e8";
+      this.ctx.drawImage(mapImg.img, originX, originY, imgWidth, imgHeight);
+      // if (mapImg.gizmoState) {
+      //   let topLeft = [originX, originY];
+      //   let topRight = [originX+mapImg.img.width, originY];
+      //   let bottomLeft = [originX, originY+mapImg.img.height];
+      //   let bottomRight = [originX+mapImg.img.width, originY+mapImg.img.height];
 
-        this.ctx.arc(topLeft[0], topLeft[1], 10, 0, Math.PI*2);
-        // this.ctx.arc(topRight[0], topRight[1], 10, 0, Math.PI*2);
-        // this.ctx.arc(bottomLeft[0], bottomLeft[1], 10, 0, Math.PI*2);
-        // this.ctx.arc(bottomRight[0], bottomRight[1], 10, 0, Math.PI*2);
+      //   this.ctx.beginPath();
+      //   this.ctx.strokeStyle = "#54c3e8";
 
-        this.ctx.fill();
-      }
+      //   this.ctx.arc(topLeft[0], topLeft[1], 10, 0, Math.PI*2);
+      //   // this.ctx.arc(topRight[0], topRight[1], 10, 0, Math.PI*2);
+      //   // this.ctx.arc(bottomLeft[0], bottomLeft[1], 10, 0, Math.PI*2);
+      //   // this.ctx.arc(bottomRight[0], bottomRight[1], 10, 0, Math.PI*2);
+
+      //   this.ctx.fill();
+      // }
     });
   }
 }
