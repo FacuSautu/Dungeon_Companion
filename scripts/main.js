@@ -170,7 +170,7 @@ toolbarMenu.forEach((menuOption) => {
           let tokenName = document.getElementById('tokenName');
           let tokenPJ = document.getElementById('tokenPJ');
           let tokenImg = document.getElementById('tokenImg');
-          
+
           if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
             return false;
           }

@@ -1,2 +1,5 @@
 buckup/
 node_modules/
+
+# Se ignoran los archivos de cache de miniaturas del explorador de windows
+Thumbs.db
