@@ -1,5 +1,5 @@
 // Clase Display
-class Map{
+class DungeonMap{
   constructor(canvas, width, height, gridSize, tokens){
     this.canvas = canvas;
     this.canvas.width = Math.ceil(width/gridSize)*gridSize;

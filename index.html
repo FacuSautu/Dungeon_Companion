@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <title>Dungeon Companion</title>
 
+    <!-- Bootstrap 5.2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+    <!-- Estilos propios -->
     <link rel="stylesheet" href="styles/css/style.css">
   </head>
   <body>
@@ -146,27 +150,60 @@
             </li>
           </ul>
         </li>
-        <!-- <li menu_option="info">
+        <!-- <li class="toolbar_menu_option" menu_option="info">
           <i class="toolbar_menu_icon fa-lg fa-solid fa-circle-question"></i>
         </li> -->
+        <li class="toolbar_menu_option" menu_option="add_token">
+          <i class="fa-solid fa-user-plus"></i>
+        </li>
       </ul>
     </div>
 
     <div class="content">
       <canvas class="main_content" id="canvas"></canvas>
 
-      <div id="chat">
-        <div id="messages"></div>
-        <div id="chatControlls">
-          <input id="chatInput" type="text" name="" value="">
-          <button id="chatBtn" type="button">Send</button>
+      <div id="sideContent">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat-tab-pane" type="button" role="tab" aria-controls="chat-tab-pane" aria-selected="true">
+              <i class="fa-solid fa-message"></i>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content h-100" id="myTabContent">
+          <div class="h-100 tab-pane fade show active" id="chat-tab-pane" role="tabpanel" aria-labelledby="chat-tab" tabindex="0">
+            <div id="messages"></div>
+            <div class="input-group mb-3">
+              <input id="chatInput" type="text" class="form-control">
+              <button id="chatBtn" class="btn btn-secondary" type="button">Send</button>
+            </div>
+          </div>
+          <div class="h-100 tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+            Desarrollo en proceso
+          </div>
         </div>
       </div>
     </div>
 
+    
+
+    <!-- Bootstrap 5.2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+
     <!-- Font Aweasome -->
     <script src="https://kit.fontawesome.com/deadcfe648.js" crossorigin="anonymous"></script>
 
+    <!-- Sweet Alert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.27/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Scripts propios -->
     <script src="scripts/clases.js" charset="utf-8"></script>
     <script src="scripts/PJs.js" charset="utf-8"></script>
     <script src="scripts/main.js" charset="utf-8"></script>
