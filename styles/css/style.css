@@ -120,6 +120,10 @@ body {
   padding: 20px;
 }
 
+#sideContent #compendium-tab-pane {
+  overflow-y: scroll;
+}
+
 #sideContent #messages {
   height: 85%;
   background-color: #fff;

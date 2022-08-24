@@ -22,6 +22,9 @@ const user = new User('Facu', true, tokens);
 const chat = new Chat(user, chatLog);
 
 
+// Carga de datos por API
+loadCompendium();
+
 
 // Definición de Event Listeners.
 
@@ -141,51 +144,36 @@ toolbarMenu.forEach((menuOption) => {
     }
 
     if (slctdMenuOpt == 'add_token') {
-      Swal.fire({
-        title: 'Cargar Token',
-        html: `<div class="col-10 offset-1">
-                <form class="row g-3">
-                  <div class="col-md-6">
-                    <label for="tokenName" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="tokenName" placeholder="Garret Nightshade">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="tokenPJ" class="form-label">Personaje</label>
-                    <select class="form-select" id="tokenPJ">
-                      <option selected>---</option>
-                      <option value="1">Garret</option>
-                      <option value="2">Leosariph</option>
-                    </select>
-                  </div>
-                  <div class="col-12">
-                    <label for="tokenImg" class="form-label">Imagen</label>
-                    <input type="text" class="form-control" id="tokenImg" placeholder="Imagen del token">
-                  </div>
-                </form>
-              </div>`,
-        width: "50%",
-        confirmButtonText: 'Cargar',
-        showCancelButton: true,
-        preConfirm: () => {
-          let tokenName = document.getElementById('tokenName');
-          let tokenPJ = document.getElementById('tokenPJ');
-          let tokenImg = document.getElementById('tokenImg');
-
-          if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
-            return false;
-          }
-        },
-      }).then((alertValue)=>{
-        if(alertValue.value){
-          let tokenName = document.getElementById('tokenName').value;
-          let tokenPJ = (document.getElementById('tokenPJ').value == 1) ? new HojaPJ(garret) : new HojaPJ(leosariph);
-          let tokenImg = document.getElementById('tokenImg').value;
-
-          let newToken = new Token(2, 300, 300, map.gridSize/2, tokenPJ,tokenImg);
-
-          map.addToken(newToken);
-        }
-      });
+      fetch('assets/layout/dnd_5e_charSheet/index.html')
+        .then(res => res.text())
+        .then((html) => {
+          Swal.fire({
+            title: 'Cargar Token',
+            html,
+            width: "80%",
+            confirmButtonText: 'Cargar',
+            showCancelButton: true,
+            preConfirm: () => {
+              let tokenName = document.getElementById('tokenName');
+              let tokenPJ = document.getElementById('tokenPJ');
+              let tokenImg = document.getElementById('tokenImg');
+    
+              if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
+                return false;
+              }
+            },
+          }).then((alertValue)=>{
+            if(alertValue.value){
+              let tokenName = document.getElementById('tokenName').value;
+              let tokenPJ = (document.getElementById('tokenPJ').value == 1) ? new HojaPJ(garret) : new HojaPJ(leosariph);
+              let tokenImg = document.getElementById('tokenImg').value;
+    
+              let newToken = new Token(2, 300, 300, map.gridSize/2, tokenPJ,tokenImg);
+    
+              map.addToken(newToken);
+            }
+          });
+        });
     }else{
       // Cambio de valores en el objeto Map.
       map.setUtilityOpt('utility', slctdMenuOpt);
@@ -240,4 +228,78 @@ function render(){
 
 function update(){
   map.update();
+}
+
+async function loadCompendium(){
+  const compendiumItems = [['races', 'razas'], ['classes', 'clases'], ['monsters', 'bestiario'], ['spells', 'conjuros']];
+
+  compendiumItems.forEach(compendiumItem => {
+    fetch(`https://www.dnd5eapi.co/api/${compendiumItem[0]}`)
+    .then(res => res.json())
+    .then(rules => {
+      const compList = document.getElementById(`compendio-${compendiumItem[1]}-list`);
+      rules.results.forEach((rule) => {
+        const comp_li = document.createElement('li');
+        comp_li.classList.add('list-group-item');
+        comp_li.setAttribute('api_url', rule.url);
+        comp_li.innerText = "- "+rule.name;
+
+        comp_li.addEventListener('click', () => {
+          const liTitle = comp_li.innerText;
+          fetch(`https://www.dnd5eapi.co${comp_li.getAttribute('api_url')}`)
+            .then(res => res.json())
+            .then(compData => {
+              console.log(compData);
+              let compInfo;
+              switch (compendiumItem[1]) {
+                case 'razas':
+                  compInfo = `<h3>${compData.name}</h3>
+                  <hr>
+                  <h4>Attribute bonus</h4>
+                  <span id="atribute_bonus" style="display:flex; flex-wrap: wrap">`;
+
+                  compData.ability_bonuses.forEach(ability_bonus => {
+                    compInfo += `<span style="padding: 0 10px">${ability_bonus.ability_score.name} +${ability_bonus.bonus}</span>`;
+                  })
+                  compInfo += `</span>
+                  <hr>
+                  <h4>Alignment</h4>
+                  <p>${compData.alignment}</p>
+                  <hr>
+                  <h4>Size [${compData.size}]</h4>
+                  <p>${compData.size_description}</p>
+                  <hr>
+                  <h4>Speed: ${compData.speed}fts</h4>
+                  <hr>
+                  <h4>Languages</h4>
+                  <p>${compData.language_desc}</p>`;
+                  break;
+              
+                case 'clases':
+                  compInfo.innerHTML = ``;
+                  break;
+
+                case 'bestiario':
+                  compInfo.innerHTML = ``;
+                  break;
+
+                case 'razaconjuros':
+                  compInfo.innerHTML = ``;
+                  break;
+              }
+
+              Swal.fire({
+                title: liTitle,
+                html: compInfo,
+                width: "80%",
+              });
+            })
+        });
+
+        compList.append(comp_li);
+
+      });
+    })
+    .catch(error => alert("Error de API:\n"+error));
+  });
 }

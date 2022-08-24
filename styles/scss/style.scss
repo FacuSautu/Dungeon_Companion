@@ -119,6 +119,10 @@ body{
   background-color: rgba(234, 223, 179, 0.7);
   padding: 20px;
 
+  #compendium-tab-pane{
+    overflow-y: scroll;
+  }
+
   #messages{
     height: 85%;
     background-color: #fff;

@@ -164,20 +164,34 @@
 
       <div id="sideContent">
 
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <!-- inicio Tab panel del menu lateral -->
+        <ul class="nav nav-tabs" id="sideTab">
+          <!-- Tab de Chat -->
           <li class="nav-item">
             <button class="nav-link active" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat-tab-pane" type="button" role="tab" aria-controls="chat-tab-pane" aria-selected="true">
               <i class="fa-solid fa-message"></i>
             </button>
           </li>
+
+          <!-- Tab de Compendio -->
           <li class="nav-item">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">
+            <button class="nav-link" id="compendium-tab" data-bs-toggle="tab" data-bs-target="#compendium-tab-pane" type="button" role="tab" aria-controls="compendium-tab-pane" aria-selected="false">
+              <i class="fa-solid fa-book-bookmark"></i>
+            </button>
+          </li>
+
+          <!-- Tab de Configuración -->
+          <li class="nav-item">
+            <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config-tab-pane" type="button" role="tab" aria-controls="config-tab-pane" aria-selected="false">
               <i class="fa-solid fa-gear"></i>
             </button>
           </li>
         </ul>
+        <!-- fin Tab panel del menu lateral -->
 
-        <div class="tab-content h-100" id="myTabContent">
+        <!-- inicio contenido de Tabs del menu lateral -->
+        <div class="tab-content h-100" id="sideTabContent">
+          <!-- Contenido Tab de Chat -->
           <div class="h-100 tab-pane fade show active" id="chat-tab-pane" role="tabpanel" aria-labelledby="chat-tab" tabindex="0">
             <div id="messages"></div>
             <div class="input-group mb-3">
@@ -185,11 +199,112 @@
               <button id="chatBtn" class="btn btn-secondary" type="button">Send</button>
             </div>
           </div>
-          <div class="h-100 tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+
+          <!-- inicio Contenido Tab de Compendio -->
+          <div class="h-100 tab-pane bg-white fade" id="compendium-tab-pane" role="tabpanel" aria-labelledby="compendium-tab" tabindex="0">
+            <!-- inicio Acordiones de Compendio -->
+            <div class="accordion accordion-flush" id="accordionCompendio">
+              <!-- inicio Acordion Reglas -->
+              <!-- <div class="accordion-item">
+                <h2 class="accordion-header" id="compendio-reglas">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-reglas" aria-expanded="false" aria-controls="compendio-reglas">
+                    Reglas
+                  </button>
+                </h2>
+                <div id="compendio-content-reglas" class="accordion-collapse collapse" aria-labelledby="compendio-reglas" data-bs-parent="#accordionCompendio">
+                  <ul class="list-group list-group-flush" id="compendio-reglas-list">
+                  </ul>
+                </div>
+              </div> -->
+              <!-- fin Acordion Reglas -->
+
+              <!-- inicio Acordion Razas -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="compendio-razas">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-razas" aria-expanded="false" aria-controls="compendio-content-razas">
+                    Razas
+                  </button>
+                </h2>
+                <div id="compendio-content-razas" class="accordion-collapse collapse" aria-labelledby="compendio-razas" data-bs-parent="#accordionCompendio">
+                  <ul class="list-group list-group-flush" id="compendio-razas-list">
+                  </ul>
+                </div>
+              </div>
+              <!-- fin Acordion Razas -->
+
+              <!-- inicio Acordion Clases -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="compendio-clases">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-clases" aria-expanded="false" aria-controls="compendio-content-clases">
+                    Clases
+                  </button>
+                </h2>
+                <div id="compendio-content-clases" class="accordion-collapse collapse" aria-labelledby="compendio-clases" data-bs-parent="#accordionCompendio">
+                  <ul class="list-group list-group-flush" id="compendio-clases-list">
+                  </ul>
+                </div>
+              </div>
+              <!-- fin Acordion Clases -->
+
+              <!-- inicio Acordion Bestiario -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="compendio-bestiario">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-bestiario" aria-expanded="false" aria-controls="compendio-content-bestiario">
+                    Bestiario
+                  </button>
+                </h2>
+                <div id="compendio-content-bestiario" class="accordion-collapse collapse" aria-labelledby="compendio-bestiario" data-bs-parent="#accordionCompendio">
+                  <ul class="list-group list-group-flush" id="compendio-bestiario-list">
+                  </ul>
+                </div>
+              </div>
+              <!-- fin Acordion Bestiario -->
+
+              <!-- inicio Acordion Conjuros -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="compendio-conjuros">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-conjuros" aria-expanded="false" aria-controls="compendio-content-conjuros">
+                    Conjuros
+                  </button>
+                </h2>
+                <div id="compendio-content-conjuros" class="accordion-collapse collapse" aria-labelledby="compendio-conjuros" data-bs-parent="#accordionCompendio">
+                  <ul class="list-group list-group-flush" id="compendio-conjuros-list">
+                  </ul>
+                </div>
+              </div>
+              <!-- inicio Acordion Conjuros -->
+            </div>
+            <!-- fin Acordiones de Compendio -->
+          </div>
+          <!-- fin Contenido Tab de Compendio -->
+
+          <!-- Contenido Tab de Configuración -->
+          <div class="h-100 tab-pane bg-white fade" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">
             Desarrollo en proceso
           </div>
         </div>
+        <!-- fin contenido de Tabs del menu lateral -->
       </div>
+    </div>
+
+    <div>
+      <h3>Barbarian</h3>
+      <hr>
+      <h4>Hit Points</h4>
+      <p><b>Hit Dice: </b>1D${} per level</p>
+      <p><b>Hit Points at 1st Level: </b>${} + CONS</p>
+      <p><b>Hit Points at Higher Levels: </b>1D${} (or ) + CONS per level after the 1st</p>
+      <hr>
+      <h4>Proficiencies</h4>
+      <p></p>
+      <hr>
+      <h4>Size [Medium]</h4>
+      <p></p>
+      <hr>
+      <h4>Speed: 60fts</h4>
+      <hr>
+      <h4>Languages</h4>
+      <p></p>
     </div>
 
     
