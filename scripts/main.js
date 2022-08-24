@@ -276,11 +276,76 @@ async function loadCompendium(){
                   break;
               
                 case 'clases':
-                  compInfo.innerHTML = ``;
+                  compInfo = `<h3>Barbarian</h3>
+                  <hr>
+                  <h4>Hit Points</h4>
+                  <p><b>Hit Dice: </b>1D${compData.hit_die} per level</p>
+                  <p><b>Hit Points at 1st Level: </b>${compData.hit_die} + CONS</p>
+                  <p><b>Hit Points at Higher Levels: </b>1D${compData.hit_die} (or ${compData.hit_die/2}) + CONS per level after the 1st</p>
+                  <hr>
+                  <h4>Proficiencies</h4>
+                  <span style="display: flex; flex-wrap:wrap">`;
+                  compData.proficiencies.forEach(proficiencie => compInfo += `<span style="padding: 0 10px">${proficiencie.name}</span>`);
+                  compData.proficiency_choices.forEach(proficiencieChoice => compInfo += `<span style="width: 100%; padding: 10px 10px">${proficiencieChoice.desc}</span>`);
+                  compInfo += `</span>
+                  <hr>
+                  <h4>Equipment</h4>
+                  <span style="display: flex; flex-direction: column; flex-wrap:wrap">`;
+                  compData.starting_equipment.forEach(startEquip => compInfo += `<span style="padding: 0 10px">${startEquip.quantity} X ${startEquip.equipment.name}</span>`);
+                  compData.starting_equipment_options.forEach(startEquipOpt => compInfo += `<span style="padding: 0 10px">${startEquipOpt.desc}</span>`);
+                  compInfo += `</span>`;
                   break;
 
                 case 'bestiario':
-                  compInfo.innerHTML = ``;
+                  compInfo = `<h3>${compData.name}</h3>
+                  <p>${compData.size}${compData.type}, ${compData.alignment}</p>
+                  <hr>
+                  <p><b>Armor Class </b>${compData.armor_class}</p>
+                  <p><b>Hit Points </b>${compData.hit_points}</p>
+                  <p><b>Speed </b>
+                    ${(compData.speed.walk) ? compData.speed.walk+'ft.' : ''}
+                    ${(compData.speed.fly) ? 'fly: '+compData.speed.fly+'ft.' : ''}
+                    ${(compData.speed.swim) ? 'swim: '+compData.speed.swim+'ft.' : ''}
+                  </p>
+                  <hr>
+                  <span style="display: flex; justify-content: space-evenly;">
+                    <span style="display: flex; flex-direction: column;">
+                      STR
+                      <p>${compData.strength} (${((compData.strength-10)/2 > 0) ? '+'+(compData.strength-10)/2 : (compData.strength-10)/2})</p>
+                    </span>
+                    <span style="display: flex; flex-direction: column;">
+                      DEX
+                      <p>${compData.dexterity} (${((compData.dexterity-10)/2 > 0) ? '+'+(compData.dexterity-10)/2 : (compData.dexterity-10)/2})</p>
+                    </span>
+                    <span style="display: flex; flex-direction: column;">
+                      CON
+                      <p>${compData.constitution} (${((compData.constitution-10)/2 > 0) ? '+'+(compData.constitution-10)/2 : (compData.constitution-10)/2})</p>
+                    </span>
+                    <span style="display: flex; flex-direction: column;">
+                      INT
+                      <p>${compData.intelligence} (${((compData.intelligence-10)/2 > 0) ? '+'+(compData.intelligence-10)/2 : (compData.intelligence-10)/2})</p>
+                    </span>
+                    <span style="display: flex; flex-direction: column;">
+                      WIS
+                      <p>${compData.wisdom} (${((compData.wisdom-10)/2 > 0) ? '+'+(compData.wisdom-10)/2 : (compData.wisdom-10)/2})</p>
+                    </span>
+                    <span style="display: flex; flex-direction: column;">
+                      CHA
+                      <p>${compData.charisma} (${((compData.charisma-10)/2 > 0) ? '+'+(compData.charisma-10)/2 : (compData.charisma-10)/2})</p>
+                    </span>
+                  </span>
+                  <hr>
+                  <p><b>Saving Throws/Skills </b>`;
+                  compInfo += `${compData.proficiencies.map(prof => prof.name)}`;
+                  compInfo += `</p>
+                  <p><b>Senses </b>${}</p>
+                  <p><b>Languages </b>${}</p>
+                  <p><b>Challenge </b>${}</p>
+                  <hr>
+                  <p><b>Challenge </b>${}</p>
+                  <hr>
+                  <h5>Actions</h5>
+                  <p><b>Challenge </b>${}</p>`;
                   break;
 
                 case 'razaconjuros':
