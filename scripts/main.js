@@ -273,6 +273,12 @@ async function loadCompendium(){
                   <hr>
                   <h4>Languages</h4>
                   <p>${compData.language_desc}</p>`;
+
+                  Swal.fire({
+                    title: liTitle,
+                    html: compInfo,
+                    width: "80%",
+                  });
                   break;
 
                 case 'clases':
@@ -294,70 +300,172 @@ async function loadCompendium(){
                   compData.starting_equipment.forEach(startEquip => compInfo += `<span style="padding: 0 10px">${startEquip.quantity} X ${startEquip.equipment.name}</span>`);
                   compData.starting_equipment_options.forEach(startEquipOpt => compInfo += `<span style="padding: 0 10px">${startEquipOpt.desc}</span>`);
                   compInfo += `</span>`;
+
+                  Swal.fire({
+                    title: liTitle,
+                    html: compInfo,
+                    width: "80%",
+                  });
                   break;
 
                 case 'bestiario':
-                  compInfo = `<h3>${compData.name}</h3>
-                  <p>${compData.size}${compData.type}, ${compData.alignment}</p>
-                  <hr>
-                  <p><b>Armor Class </b>${compData.armor_class}</p>
-                  <p><b>Hit Points </b>${compData.hit_points}</p>
-                  <p><b>Speed </b>
-                    ${(compData.speed.walk) ? compData.speed.walk+'ft.' : ''}
-                    ${(compData.speed.fly) ? 'fly: '+compData.speed.fly+'ft.' : ''}
-                    ${(compData.speed.swim) ? 'swim: '+compData.speed.swim+'ft.' : ''}
-                  </p>
-                  <hr>
-                  <span style="display: flex; justify-content: space-evenly;">
-                    <span style="display: flex; flex-direction: column;">
-                      STR
-                      <p>${compData.strength} (${((compData.strength-10)/2 > 0) ? '+'+(compData.strength-10)/2 : (compData.strength-10)/2})</p>
-                    </span>
-                    <span style="display: flex; flex-direction: column;">
-                      DEX
-                      <p>${compData.dexterity} (${((compData.dexterity-10)/2 > 0) ? '+'+(compData.dexterity-10)/2 : (compData.dexterity-10)/2})</p>
-                    </span>
-                    <span style="display: flex; flex-direction: column;">
-                      CON
-                      <p>${compData.constitution} (${((compData.constitution-10)/2 > 0) ? '+'+(compData.constitution-10)/2 : (compData.constitution-10)/2})</p>
-                    </span>
-                    <span style="display: flex; flex-direction: column;">
-                      INT
-                      <p>${compData.intelligence} (${((compData.intelligence-10)/2 > 0) ? '+'+(compData.intelligence-10)/2 : (compData.intelligence-10)/2})</p>
-                    </span>
-                    <span style="display: flex; flex-direction: column;">
-                      WIS
-                      <p>${compData.wisdom} (${((compData.wisdom-10)/2 > 0) ? '+'+(compData.wisdom-10)/2 : (compData.wisdom-10)/2})</p>
-                    </span>
-                    <span style="display: flex; flex-direction: column;">
-                      CHA
-                      <p>${compData.charisma} (${((compData.charisma-10)/2 > 0) ? '+'+(compData.charisma-10)/2 : (compData.charisma-10)/2})</p>
-                    </span>
-                  </span>
-                  <hr>
-                  <p><b>Saving Throws/Skills </b>`;
-                  compData.proficiencies.forEach(prof=> compInfo += `${prof.proficiency.name}, `);
-                  compInfo += `</p>
-                  <p><b>Senses </b></p>
-                  <p><b>Languages </b></p>
-                  <p><b>Challenge </b></p>
-                  <hr>
-                  <p><b>Challenge </b></p>
-                  <hr>
-                  <h5>Actions</h5>
-                  <p><b>Challenge </b></p>`;
+                  fetch('assets/layout/compendium/monster_statblock/two-column.html')
+                    .then(res => res.text())
+                    .then((html)=>{
+                      let statBlock = document.createElement('div');
+                      statBlock.innerHTML = html;
+
+                      // Informacion general del Mounstruo
+                      statBlock.querySelector('#monster_name').innerText = compData.name;
+                      statBlock.querySelector('#size_type_alignment').innerText = `${compData.size} ${compData.type}, ${compData.alignment}`;
+                      statBlock.querySelector('#monster_AC').innerText = `${compData.armor_class}`;
+                      statBlock.querySelector('#monster_hitpoints').innerText = `${compData.hit_points} (${compData.hit_dice} + ${Number(compData.hit_dice.split('d')[0])*Math.floor((compData.constitution-10)/2)})`;
+                      statBlock.querySelector('#monster_speed').innerText = ``;
+                      Object.keys(compData.speed).forEach((speed) => {
+                        if(speed == 'walk') {
+                          statBlock.querySelector('#monster_speed').innerText += `${compData.speed[speed]}`;
+                        }else {
+                          statBlock.querySelector('#monster_speed').innerText += ` ${speed}: ${compData.speed[speed]}`;
+                        }
+                      });
+
+                      // Atributos y Modificadores
+                      statBlock.querySelector('#monster_attr_str').innerText = `${compData.strength} (${((compData.strength-10)/2)>0 ? '+'+Math.floor((compData.strength-10)/2) : Math.floor((compData.strength-10)/2)})`;
+                      statBlock.querySelector('#monster_attr_dex').innerText = `${compData.dexterity} (${((compData.dexterity-10)/2)>0 ? '+'+Math.floor((compData.dexterity-10)/2) : Math.floor((compData.dexterity-10)/2)})`;
+                      statBlock.querySelector('#monster_attr_con').innerText = `${compData.constitution} (${((compData.constitution-10)/2)>0 ? '+'+Math.floor((compData.constitution-10)/2) : Math.floor((compData.constitution-10)/2)})`;
+                      statBlock.querySelector('#monster_attr_int').innerText = `${compData.intelligence} (${((compData.intelligence-10)/2)>0 ? '+'+Math.floor((compData.intelligence-10)/2) : Math.floor((compData.intelligence-10)/2)})`;
+                      statBlock.querySelector('#monster_attr_wis').innerText = `${compData.wisdom} (${((compData.wisdom-10)/2)>0 ? '+'+Math.floor((compData.wisdom-10)/2) : Math.floor((compData.wisdom-10)/2)})`;
+                      statBlock.querySelector('#monster_attr_cha').innerText = `${compData.charisma} (${((compData.charisma-10)/2)>0 ? '+'+Math.floor((compData.charisma-10)/2) : Math.floor((compData.charisma-10)/2)})`;
+
+                      // Resistencias y Sentidos
+                      statBlock.querySelector('#monster_properties').innerText = '';
+                      if(compData.damage_resistances.length > 0){
+                        statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                      <h4>Damage Resistance:</h4>
+                                                                                      <p id="monster_dmg_resistances"></p>
+                                                                                    </div>`;
+                        compData.damage_resistances.forEach(dmg_res => {
+                          if (statBlock.querySelector('#monster_dmg_resistances').innerText == '') {
+                            statBlock.querySelector('#monster_dmg_resistances').innerText = `${dmg_res}`;
+                          }else {
+                            statBlock.querySelector('#monster_dmg_resistances').innerText += `, ${dmg_res}`;
+                          }
+                        });
+                      }
+                      if(compData.damage_immunities.length > 0){
+                        statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                      <h4>Damage Immunities:</h4>
+                                                                                      <p id="monster_dmg_inmunities"></p>
+                                                                                    </div>`;
+                        compData.damage_immunities.forEach(dmg_inm => {
+                          if (statBlock.querySelector('#monster_dmg_inmunities').innerText == '') {
+                            statBlock.querySelector('#monster_dmg_inmunities').innerText = `${dmg_inm}`;
+                          }else {
+                            statBlock.querySelector('#monster_dmg_inmunities').innerText += `, ${dmg_inm}`;
+                          }
+                        });
+                      }
+                      if(compData.damage_vulnerabilities.length > 0){
+                        statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                      <h4>Damage Vulnerabilities:</h4>
+                                                                                      <p id="monster_dmg_vulnerabilities"></p>
+                                                                                    </div>`;
+                        compData.damage_vulnerabilities.forEach(dmg_vul => {
+                          if (statBlock.querySelector('#monster_dmg_vulnerabilities').innerText == '') {
+                            statBlock.querySelector('#monster_dmg_vulnerabilities').innerText = `${dmg_vul}`;
+                          }else {
+                            statBlock.querySelector('#monster_dmg_vulnerabilities').innerText += `, ${dmg_vul}`;
+                          }
+                        });
+                      }
+                      if(compData.condition_immunities.length > 0){
+                        statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                      <h4>Condition Inmunities:</h4>
+                                                                                      <p id="monster_cond_inmunities"></p>
+                                                                                    </div>`;
+                        compData.condition_immunities.forEach(cond_inm => {
+                          if (statBlock.querySelector('#monster_cond_inmunities').innerText == '') {
+                            statBlock.querySelector('#monster_cond_inmunities').innerText = `${cond_inm.name}`;
+                          }else {
+                            statBlock.querySelector('#monster_cond_inmunities').innerText += `, ${cond_inm.name}`;
+                          }
+                        });
+                      }
+                      if(Object.keys(compData.senses).length > 0){
+                        statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                      <h4>Senses:</h4>
+                                                                                      <p id="monster_senses"></p>
+                                                                                    </div>`;
+                        Object.keys(compData.senses).forEach(sense => {
+                          if (statBlock.querySelector('#monster_senses').innerText == '') {
+                            statBlock.querySelector('#monster_senses').innerText = `${sense} ${compData.senses[sense]}`;
+                          }else {
+                            statBlock.querySelector('#monster_senses').innerText += `, ${sense} ${compData.senses[sense]}`;
+                          }
+                        });
+                      }
+                      statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                    <h4>Languages:</h4>
+                                                                                    <p id="monster_languages"></p>
+                                                                                  </div>`;
+                      statBlock.querySelector('#monster_languages').innerHTML = (compData.languages == '') ? '&mdash;' : compData.languages;
+                      statBlock.querySelector('#monster_properties').innerHTML += `<div class="property-line first">
+                                                                                    <h4>Challenge:</h4>
+                                                                                    <p id="monster_CR">${compData.challenge_rating} (${compData.xp} XP)</p>
+                                                                                  </div>`;
+
+                      // Habilidades
+                      statBlock.querySelector('#monster_habilities').innerText = '';
+                      if(compData.special_abilities.length > 0){
+                        compData.special_abilities.forEach(special_ability => {
+                          statBlock.querySelector('#monster_habilities').innerHTML += `<div class="property-block">
+                                                                                         <h4>${special_ability.name}:</h4>
+                                                                                         <p>${special_ability.desc}</p>
+                                                                                       </div>`;
+                        });
+                      }
+
+                      // Acciones
+                      statBlock.querySelector('#monster_actions').innerText = '';
+                      if (compData.actions.length > 0) {
+                        statBlock.querySelector('#monster_actions').innerHTML = `<h3>Actions</h3>`;
+                        compData.actions.forEach(action => {
+                          statBlock.querySelector('#monster_actions').innerHTML += `<div class="property-block">
+                                                                                      <h4>${action.name}.</h4>
+                                                                                      <p>${action.desc}</p>
+                                                                                    </div>`;
+                        });
+                      }
+
+                      // Acciones Legendarias
+                      statBlock.querySelector('#monster_legendary_actions').innerText = '';
+                      if (compData.legendary_actions.length > 0) {
+                        statBlock.querySelector('#monster_legendary_actions').innerHTML = `<h3>Legendary Actions</h3>`;
+                        compData.legendary_actions.forEach(legendary_action => {
+                          statBlock.querySelector('#monster_legendary_actions').innerHTML += `<div class="property-block">
+                                                                                      <h4>${legendary_action.name}.</h4>
+                                                                                      <p>${legendary_action.desc}</p>
+                                                                                    </div>`;
+                        });
+                      }
+
+                      Swal.fire({
+                        html: statBlock.innerHTML,
+                        width: "80%",
+                      });
+                    });
                   break;
 
-                case 'razaconjuros':
+                case 'conjuros':
                   compInfo.innerHTML = ``;
+
+                  Swal.fire({
+                    title: liTitle,
+                    html: compInfo,
+                    width: "80%",
+                  });
                   break;
               }
-
-              Swal.fire({
-                title: liTitle,
-                html: compInfo,
-                width: "80%",
-              });
             })
         });
 
