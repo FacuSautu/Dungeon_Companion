@@ -157,7 +157,7 @@ toolbarMenu.forEach((menuOption) => {
               let tokenName = document.getElementById('tokenName');
               let tokenPJ = document.getElementById('tokenPJ');
               let tokenImg = document.getElementById('tokenImg');
-    
+
               if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
                 return false;
               }
@@ -167,9 +167,9 @@ toolbarMenu.forEach((menuOption) => {
               let tokenName = document.getElementById('tokenName').value;
               let tokenPJ = (document.getElementById('tokenPJ').value == 1) ? new HojaPJ(garret) : new HojaPJ(leosariph);
               let tokenImg = document.getElementById('tokenImg').value;
-    
+
               let newToken = new Token(2, 300, 300, map.gridSize/2, tokenPJ,tokenImg);
-    
+
               map.addToken(newToken);
             }
           });
@@ -274,7 +274,7 @@ async function loadCompendium(){
                   <h4>Languages</h4>
                   <p>${compData.language_desc}</p>`;
                   break;
-              
+
                 case 'clases':
                   compInfo = `<h3>Barbarian</h3>
                   <hr>
@@ -336,16 +336,16 @@ async function loadCompendium(){
                   </span>
                   <hr>
                   <p><b>Saving Throws/Skills </b>`;
-                  compInfo += `${compData.proficiencies.map(prof => prof.name)}`;
+                  compData.proficiencies.forEach(prof=> compInfo += `${prof.proficiency.name}, `);
                   compInfo += `</p>
-                  <p><b>Senses </b>${}</p>
-                  <p><b>Languages </b>${}</p>
-                  <p><b>Challenge </b>${}</p>
+                  <p><b>Senses </b></p>
+                  <p><b>Languages </b></p>
+                  <p><b>Challenge </b></p>
                   <hr>
-                  <p><b>Challenge </b>${}</p>
+                  <p><b>Challenge </b></p>
                   <hr>
                   <h5>Actions</h5>
-                  <p><b>Challenge </b>${}</p>`;
+                  <p><b>Challenge </b></p>`;
                   break;
 
                 case 'razaconjuros':
