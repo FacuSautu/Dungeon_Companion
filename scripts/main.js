@@ -457,12 +457,27 @@ async function loadCompendium(){
                   break;
 
                 case 'conjuros':
-                  compInfo.innerHTML = ``;
+                fetch('assets/layout/compendium/spell_detail/index.html')
+                  .then(res => res.text())
+                  .then((html)=>{
+                    let spellDetail = document.createElement('div');
+                    spellDetail.innerHTML = html;
 
-                  Swal.fire({
-                    title: liTitle,
-                    html: compInfo,
-                    width: "80%",
+                    spellDetail.querySelector('#spell_name').innerText = `${compData.name}`;
+                    spellDetail.querySelector('#spell_lvl_school').innerText = `Level ${compData.level}, ${compData.school.name.toLowerCase()} ${(compData.ritual) ? '(ritual)' : ''}`;
+
+                    spellDetail.querySelector('#spell_casting_time').innerText = `${compData.casting_time}`;
+                    spellDetail.querySelector('#spell_range').innerText = `${compData.range}`;
+                    spellDetail.querySelector('#spell_components').innerText = `${compData.components.join(', ')} ${(compData.material == '') ? '('+compData.material+')' : ''}`;
+                    spellDetail.querySelector('#spell_duration').innerText = `${(compData.concentration) ? 'Concentration,' : ''} ${compData.duration}`;
+
+                    // spellDetail.querySelector('#spell_description').innerText = '';
+                    // spellDetail.querySelector('#spell_description').innerHTML = '';
+
+                    Swal.fire({
+                      html: spellDetail.innerHTML,
+                      width: "80%",
+                    });
                   });
                   break;
               }
