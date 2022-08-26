@@ -249,35 +249,80 @@ async function loadCompendium(){
           fetch(`https://www.dnd5eapi.co${comp_li.getAttribute('api_url')}`)
             .then(res => res.json())
             .then(compData => {
+              console.log(compData);
               let compInfo;
               switch (compendiumItem[1]) {
                 case 'razas':
-                  compInfo = `<h3>${compData.name}</h3>
-                  <hr>
-                  <h4>Attribute bonus</h4>
-                  <span id="atribute_bonus" style="display:flex; flex-wrap: wrap">`;
+                  fetch('assets/layout/compendium/race_detail/index.html')
+                    .then(res => res.text())
+                    .then((html)=>{
+                      let raceDetail = document.createElement('div');
+                      raceDetail.innerHTML = html;
 
-                  compData.ability_bonuses.forEach(ability_bonus => {
-                    compInfo += `<span style="padding: 0 10px">${ability_bonus.ability_score.name} +${ability_bonus.bonus}</span>`;
-                  })
-                  compInfo += `</span>
-                  <hr>
-                  <h4>Alignment</h4>
-                  <p>${compData.alignment}</p>
-                  <hr>
-                  <h4>Size [${compData.size}]</h4>
-                  <p>${compData.size_description}</p>
-                  <hr>
-                  <h4>Speed: ${compData.speed}fts</h4>
-                  <hr>
-                  <h4>Languages</h4>
-                  <p>${compData.language_desc}</p>`;
+                      // Nombre de Raza
+                      raceDetail.querySelector('#race_name').innerText = `${compData.name}`;
 
-                  Swal.fire({
-                    title: liTitle,
-                    html: compInfo,
-                    width: "80%",
-                  });
+                      // Bonificacion de atributos
+                      compData.ability_bonuses.forEach(ability_bonus => {
+                        raceDetail.querySelector(`#race_attr_bonus_${ability_bonus.ability_score.index}`).innerText = (ability_bonus.bonus > 0) ? `+${ability_bonus.bonus}` : ability_bonus.bonus;
+                      });
+
+                      // Rasgos de Raza
+                      raceDetail.querySelector('#race_traits').innerText = '';
+                      compData.traits.forEach(async trait => {
+                        await fetch(`https://www.dnd5eapi.co${trait.url}`)
+                          .then(res => res.json())
+                          .then(traitData => {
+                            raceDetail.querySelector('#race_traits').innerHTML += `<div class="property-block">
+                                                                                    <h4>${traitData.name}.</h4>
+                                                                                    <p>${traitData.desc.join('\n')}</p>
+                                                                                  </div>`;
+                          });
+                      });
+
+                      // Detalle de Raza
+                      raceDetail.querySelector('#race_alignement').innerHTML = `<h3>Alignment</h3>
+                                                                                <div class="property-block">
+                                                                                  <p>${compData.alignment}</p>
+                                                                                </div>`;
+                      raceDetail.querySelector('#race_size').innerHTML = `<h3>Size [${compData.size}]</h3>
+                                                                          <div class="property-block">
+                                                                            <p>${compData.size_description}</p>
+                                                                          </div>`;
+                      raceDetail.querySelector('#race_speed').innerHTML = `<h3>Speed: ${compData.speed}fts</h3>`;
+                      raceDetail.querySelector('#race_laguages').innerHTML = `<h3>Languages</h3>
+                                                                              <div class="property-block">
+                                                                                <p>${compData.language_desc}</p>
+                                                                              </div>
+                                                                              <div class="abilities" id="race_languages_known">
+                                                                                <hr>
+                                                                                <h4>Known</h4>
+                                                                                <hr>
+                                                                              </div>`;
+                      compData.languages.forEach(language => {
+                        raceDetail.querySelector('#race_languages_known').innerHTML += `<div class="ability-strength">
+                                                                                          <h4>${language.name}</h4>
+                                                                                        </div>`;
+                      });
+                      if (compData.language_options) {
+                        raceDetail.querySelector('#race_laguages').innerHTML += `<div class="abilities" id="race_languages_option">
+                                                                                  <hr>
+                                                                                  <h4>Choose ${compData.language_options.choose} from:</h4>
+                                                                                  <hr>
+                                                                                </div>`;
+                        compData.language_options.from.options.forEach(lang_option => {
+                          raceDetail.querySelector('#race_languages_option').innerHTML += `<div class="ability-strength">
+                                                                                            <h4>${lang_option.item.name}</h4>
+                                                                                          </div>`;
+                        });
+                      }
+
+
+                      Swal.fire({
+                        html: raceDetail.innerHTML,
+                        width: "80%",
+                      });
+                    });
                   break;
 
                 case 'clases':
@@ -456,51 +501,51 @@ async function loadCompendium(){
                   break;
 
                 case 'conjuros':
-                fetch('assets/layout/compendium/spell_detail/index.html')
-                  .then(res => res.text())
-                  .then((html)=>{
-                    let spellDetail = document.createElement('div');
-                    spellDetail.innerHTML = html;
+                  fetch('assets/layout/compendium/spell_detail/index.html')
+                    .then(res => res.text())
+                    .then((html)=>{
+                      let spellDetail = document.createElement('div');
+                      spellDetail.innerHTML = html;
 
-                    // Encabezado de conjuro
-                    spellDetail.querySelector('#spell_name').innerText = `${compData.name}`;
-                    spellDetail.querySelector('#spell_lvl_school').innerText = `Level ${compData.level}, ${compData.school.name.toLowerCase()} ${(compData.ritual) ? '(ritual)' : ''}`;
+                      // Encabezado de conjuro
+                      spellDetail.querySelector('#spell_name').innerText = `${compData.name}`;
+                      spellDetail.querySelector('#spell_lvl_school').innerText = `Level ${compData.level}, ${compData.school.name.toLowerCase()} ${(compData.ritual) ? '(ritual)' : ''}`;
 
-                    // Parametros del conjuro
-                    spellDetail.querySelector('#spell_casting_time').innerText = `${compData.casting_time}`;
-                    spellDetail.querySelector('#spell_range').innerText = `${compData.range}`;
-                    spellDetail.querySelector('#spell_components').innerText = `${compData.components.join(', ')} ${(compData.material == '') ? '('+compData.material+')' : ''}`;
-                    spellDetail.querySelector('#spell_duration').innerText = `${(compData.concentration) ? 'Concentration,' : ''} ${compData.duration}`;
+                      // Parametros del conjuro
+                      spellDetail.querySelector('#spell_casting_time').innerText = `${compData.casting_time}`;
+                      spellDetail.querySelector('#spell_range').innerText = `${compData.range}`;
+                      spellDetail.querySelector('#spell_components').innerText = `${compData.components.join(', ')} ${(compData.material == '') ? '('+compData.material+')' : ''}`;
+                      spellDetail.querySelector('#spell_duration').innerText = `${(compData.concentration) ? 'Concentration,' : ''} ${compData.duration}`;
 
-                    // Descripcion del conjuro
-                    spellDetail.querySelector('#spell_description').innerText = '';
-                    compData.desc.forEach(spellDesc => {
-                      spellDetail.querySelector('#spell_description').innerHTML += `<div class="property-line">
-                                                                                      <p>${spellDesc}</p>
-                                                                                    </div>`;
-                    });
-                    if (compData.higher_level.length > 0) {
-                      compData.higher_level.forEach(spellHL => {
+                      // Descripcion del conjuro
+                      spellDetail.querySelector('#spell_description').innerText = '';
+                      compData.desc.forEach(spellDesc => {
                         spellDetail.querySelector('#spell_description').innerHTML += `<div class="property-line">
-                                                                                        <h4>At Higher Levels:</h4>
-                                                                                        <p>${spellHL}</p>
+                                                                                        <p>${spellDesc}</p>
                                                                                       </div>`;
                       });
-                    }
+                      if (compData.higher_level.length > 0) {
+                        compData.higher_level.forEach(spellHL => {
+                          spellDetail.querySelector('#spell_description').innerHTML += `<div class="property-line">
+                                                                                          <h4>At Higher Levels:</h4>
+                                                                                          <p>${spellHL}</p>
+                                                                                        </div>`;
+                        });
+                      }
 
-                    // Clases que utilizan el conjuro
-                    spellDetail.querySelector('#spell_clases').innerText = '';
-                    compData.classes.forEach(spellClass =>{
-                      spellDetail.querySelector('#spell_clases').innerHTML += `<div class="property-line first">
-                                                                                <p>${spellClass.name}</p>
-                                                                              </div>`;
-                    });
+                      // Clases que utilizan el conjuro
+                      spellDetail.querySelector('#spell_clases').innerText = '';
+                      compData.classes.forEach(spellClass =>{
+                        spellDetail.querySelector('#spell_clases').innerHTML += `<div class="property-line first">
+                                                                                  <p>${spellClass.name}</p>
+                                                                                </div>`;
+                      });
 
-                    Swal.fire({
-                      html: spellDetail.innerHTML,
-                      width: "80%",
+                      Swal.fire({
+                        html: spellDetail.innerHTML,
+                        width: "80%",
+                      });
                     });
-                  });
                   break;
               }
             })
