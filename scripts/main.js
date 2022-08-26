@@ -249,7 +249,6 @@ async function loadCompendium(){
           fetch(`https://www.dnd5eapi.co${comp_li.getAttribute('api_url')}`)
             .then(res => res.json())
             .then(compData => {
-              console.log(compData);
               let compInfo;
               switch (compendiumItem[1]) {
                 case 'razas':
@@ -463,16 +462,39 @@ async function loadCompendium(){
                     let spellDetail = document.createElement('div');
                     spellDetail.innerHTML = html;
 
+                    // Encabezado de conjuro
                     spellDetail.querySelector('#spell_name').innerText = `${compData.name}`;
                     spellDetail.querySelector('#spell_lvl_school').innerText = `Level ${compData.level}, ${compData.school.name.toLowerCase()} ${(compData.ritual) ? '(ritual)' : ''}`;
 
+                    // Parametros del conjuro
                     spellDetail.querySelector('#spell_casting_time').innerText = `${compData.casting_time}`;
                     spellDetail.querySelector('#spell_range').innerText = `${compData.range}`;
                     spellDetail.querySelector('#spell_components').innerText = `${compData.components.join(', ')} ${(compData.material == '') ? '('+compData.material+')' : ''}`;
                     spellDetail.querySelector('#spell_duration').innerText = `${(compData.concentration) ? 'Concentration,' : ''} ${compData.duration}`;
 
-                    // spellDetail.querySelector('#spell_description').innerText = '';
-                    // spellDetail.querySelector('#spell_description').innerHTML = '';
+                    // Descripcion del conjuro
+                    spellDetail.querySelector('#spell_description').innerText = '';
+                    compData.desc.forEach(spellDesc => {
+                      spellDetail.querySelector('#spell_description').innerHTML += `<div class="property-line">
+                                                                                      <p>${spellDesc}</p>
+                                                                                    </div>`;
+                    });
+                    if (compData.higher_level.length > 0) {
+                      compData.higher_level.forEach(spellHL => {
+                        spellDetail.querySelector('#spell_description').innerHTML += `<div class="property-line">
+                                                                                        <h4>At Higher Levels:</h4>
+                                                                                        <p>${spellHL}</p>
+                                                                                      </div>`;
+                      });
+                    }
+
+                    // Clases que utilizan el conjuro
+                    spellDetail.querySelector('#spell_clases').innerText = '';
+                    compData.classes.forEach(spellClass =>{
+                      spellDetail.querySelector('#spell_clases').innerHTML += `<div class="property-line first">
+                                                                                <p>${spellClass.name}</p>
+                                                                              </div>`;
+                    });
 
                     Swal.fire({
                       html: spellDetail.innerHTML,
