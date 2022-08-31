@@ -15,6 +15,7 @@ class DungeonMap{
       this.layers[layer].width = this.canvas.width;
       this.layers[layer].height = this.canvas.height;
     });
+    this.activeLayerName = 'objects&tokens';
     this.activeLayer = this.layers['objects&tokens'];
 
     this.scale = 1;
@@ -166,7 +167,7 @@ class DungeonMap{
   }
 
   setActiveLayer(layer){
-    console.log(layer);
+    this.activeLayerName = layer;
     this.activeLayer = this.layers[layer];
   }
 
@@ -354,30 +355,38 @@ class DungeonMap{
 
     // Visualizacion de las imagenes.
     this.images.forEach((mapImg) => {
-      let originX = mapImg.x-(mapImg.img.width/2);
-      let originY = mapImg.y-(mapImg.img.height/2);
-      let imgWidth = this.canvas.width;
-      let imgHeight = this.canvas.height;
+      let originX = mapImg.x;
+      let originY = mapImg.y;
+      let imgWidth = this.canvas.width/2;
+      let imgHeight = this.canvas.height/2;
 
       this.ctx.globalCompositeOperation='destination-over';
 
+      mapImg.img.width = imgWidth;
+      mapImg.img.height = imgHeight;
+      mapImg.resetMasures();
+
+      if (mapImg.gizmoState) {
+        this.ctx.fillStyle = "#54c3e8";
+
+        this.ctx.beginPath();
+        this.ctx.arc(mapImg.topLeft[0], mapImg.topLeft[1], mapImg.gizmoRadius, 0, 2 * Math.PI);
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.arc(mapImg.topRight[0], mapImg.topRight[1], mapImg.gizmoRadius, 0, Math.PI*2);
+        this.ctx.fill(); 
+
+        this.ctx.beginPath();
+        this.ctx.arc(mapImg.bottomLeft[0], mapImg.bottomLeft[1], mapImg.gizmoRadius, 0, Math.PI*2);
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.arc(mapImg.bottomRight[0], mapImg.bottomRight[1], mapImg.gizmoRadius, 0, Math.PI*2);
+        this.ctx.fill();
+      
+      }
       this.ctx.drawImage(mapImg.img, originX, originY, imgWidth, imgHeight);
-      // if (mapImg.gizmoState) {
-      //   let topLeft = [originX, originY];
-      //   let topRight = [originX+mapImg.img.width, originY];
-      //   let bottomLeft = [originX, originY+mapImg.img.height];
-      //   let bottomRight = [originX+mapImg.img.width, originY+mapImg.img.height];
-
-      //   this.ctx.beginPath();
-      //   this.ctx.strokeStyle = "#54c3e8";
-
-      //   this.ctx.arc(topLeft[0], topLeft[1], 10, 0, Math.PI*2);
-      //   // this.ctx.arc(topRight[0], topRight[1], 10, 0, Math.PI*2);
-      //   // this.ctx.arc(bottomLeft[0], bottomLeft[1], 10, 0, Math.PI*2);
-      //   // this.ctx.arc(bottomRight[0], bottomRight[1], 10, 0, Math.PI*2);
-
-      //   this.ctx.fill();
-      // }
     });
   }
 }
@@ -391,15 +400,106 @@ class mapImage{
     this.x = x;
     this.y = y;
 
+    this.top = this.y;
+    this.right = this.x+this.img.width;
+    this.bottom = this.y+this.img.height;
+    this.left = this.x;
+
+    this.topLeft = [this.x, this.y];
+    this.topRight = [this.x+this.img.width, this.y];
+    this.bottomLeft = [this.x, this.y+this.img.height];
+    this.bottomRight = [this.x+this.img.width, this.y+this.img.height];
+
+
     this.gizmoState = false;
+    this.gizmoRadius = 15;
+    this.selectedCorner = undefined;
+
+    this.mousedown = false;
+
+    this.handleMouseDown = event => {
+      if (this.gizmoState) {
+        if(!this.transform(event)){
+          this.toggleGizmos();
+        }
+      }else{
+        if (event.type == 'mousedown' && (this.left < event.offsetX && event.offsetX < this.right && this.top < event.offsetY && event.offsetY < this.bottom)) {
+          this.toggleGizmos();
+          return true;
+        }
+
+      }
+    };
+    this.handleMouseMove = event => {
+      this.transform(event);
+    };
+    this.handleMouseUp = event => {
+      this.transform(event);
+    };
   }
 
   toggleGizmos(){
     this.gizmoState = (this.gizmoState) ? false : true;
   }
 
-  transform(){
+  resetMasures(){
+    this.top = this.y;
+    this.right = this.x+this.img.width;
+    this.bottom = this.y+this.img.height;
+    this.left = this.x;
 
+    this.topLeft = [this.x, this.y];
+    this.topRight = [this.x+this.img.width, this.y];
+    this.bottomLeft = [this.x, this.y+this.img.height];
+    this.bottomRight = [this.x+this.img.width, this.y+this.img.height];
+  }
+
+  transform(event){
+    let TLCorner = [this.topLeft[1]-this.gizmoRadius, this.topLeft[0]+this.gizmoRadius, this.topLeft[1]+this.gizmoRadius, this.topLeft[0]-this.gizmoRadius];
+    let TRCorner = [this.topRight[1]-this.gizmoRadius, this.topRight[0]+this.gizmoRadius, this.topRight[1]+this.gizmoRadius, this.topRight[0]-this.gizmoRadius];
+    let BLCorner = [this.bottomLeft[1]-this.gizmoRadius, this.bottomLeft[0]+this.gizmoRadius, this.bottomLeft[1]+this.gizmoRadius, this.bottomLeft[0]-this.gizmoRadius];
+    let BRCorner = [this.bottomRight[1]-this.gizmoRadius, this.bottomRight[0]+this.gizmoRadius, this.bottomRight[1]+this.gizmoRadius, this.bottomRight[0]-this.gizmoRadius];
+
+    if (event.type == 'mousedown') {
+      if(TLCorner[3] < event.offsetX && event.offsetX < TLCorner[1] && TLCorner[0] < event.offsetY && event.offsetY < TLCorner[2]){
+        this.selectedCorner = 'TL';
+      }else if (TRCorner[3] < event.offsetX && event.offsetX < TRCorner[1] && TRCorner[0] < event.offsetY && event.offsetY < TRCorner[2]) {
+        this.selectedCorner = 'TR';
+      }else if (BLCorner[3] < event.offsetX && event.offsetX < BLCorner[1] && BLCorner[0] < event.offsetY && event.offsetY < BLCorner[2]) {
+        this.selectedCorner = 'BL';
+      }else if (BRCorner[3] < event.offsetX && event.offsetX < BRCorner[1] && BRCorner[0] < event.offsetY && event.offsetY < BRCorner[2]) {
+        this.selectedCorner = 'BR';
+      }
+
+      if (this.selectedCorner) {
+        this.mousedown = true;
+        return true;
+      }
+      return false;
+    }else if (event.type == 'mousemove' && this.mousedown) {
+      switch (this.selectedCorner) {
+        case 'TL':
+          
+          break;
+
+        case 'TR':
+        
+          break;
+
+        case 'BL':
+        
+          break;
+
+        case 'BR':
+        
+          break;
+      }
+      this.x = event.offsetX;
+      this.y = event.offsetY;
+    }else if ((event.type == 'mouseup' || event.type == 'mouseleave') && this.mousedown) {
+      this.mousedown = false;
+      this.selectedCorner = undefined;
+    }
   }
 }
 

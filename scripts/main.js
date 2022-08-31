@@ -46,32 +46,62 @@ chatBox.addEventListener('keypress', (e) =>{
 
 // Eventos para manejar el movimiento de los token.
 canvas.addEventListener('mousedown', (e)=>{
-  let clickCanvas = true;
-  let tokenHolded = false;
-  tokens.slice().reverse().forEach((token) => {
-    if(!tokenHolded && map.utilities.select.active){
-      if(token.handleMovement(e)){
-        clickCanvas = false;
-        tokenHolded = true;
-      }
-    }
-  });
+  switch (map.activeLayerName) {
+    case 'objects&tokens':
+      let clickCanvas = true;
+      let tokenHolded = false;
+      map.tokens.slice().reverse().forEach(token => {
+        if(!tokenHolded && map.utilities.select.active){
+          if(token.handleMovement(e)){
+            clickCanvas = false;
+            tokenHolded = true;
+          }
+        }
+      });
 
-  if (clickCanvas) {
-    map.handleMouseDown(e);
+      if (clickCanvas) {
+        map.handleMouseDown(e);
+      }
+      break;
+  
+    case 'map&background':
+      map.images.slice().reverse().forEach(mapImg => {
+        mapImg.handleMouseDown(e);
+      });
+      break;
   }
 });
 canvas.addEventListener('mousemove', (e)=>{
-  tokens.forEach((token) => {
-    token.handleMovement(e);
-  });
-  map.handleMouseMove(e);
+  switch (map.activeLayerName) {
+    case 'objects&tokens':
+      map.tokens.forEach((token) => {
+        token.handleMovement(e);
+      });
+      map.handleMouseMove(e);   
+      break;
+  
+    case 'map&background':
+      map.images.forEach((mapImg) => {
+        mapImg.handleMouseMove(e);
+      });
+      break;
+  }
 });
 canvas.addEventListener('mouseup', (e)=>{
-  tokens.forEach((token) => {
-    token.handleMovement(e);
-  });
-  map.handleMouseUp(e);
+  switch (map.activeLayerName) {
+    case 'objects&tokens':
+      map.tokens.forEach((token) => {
+        token.handleMovement(e);
+      });
+      map.handleMouseUp(e);   
+      break;
+  
+    case 'map&background':
+      map.images.forEach((mapImg) => {
+        mapImg.handleMouseUp(e);
+      });
+      break;
+  }
 });
 canvas.addEventListener('mouseleave', (e)=>{
   tokens.forEach((token) => {
@@ -110,24 +140,8 @@ canvas.addEventListener('drop', (e) => {
   }
   reader.readAsDataURL(file);
 
-  const mapImg = new mapImage(image, 800, 800);
+  const mapImg = new mapImage(image, 800, 900);
   map.addImage(mapImg);
-});
-
-document.addEventListener('click', (e) => {
-  switch (e.target.id) {
-    case 'TM_movement':
-      let tokenID = e.target.parentElement.parentElement.getAttribute('token_target')
-      let token = map.tokens.find((token) => token.id == tokenID);
-      token.closeMenu();
-      break;
-    case 'TM_info':
-      console.log("Mostrar info");
-      break;
-    case 'TM_image':
-      console.log("Cambiar imagen");
-      break;
-  }
 });
 
 
@@ -250,7 +264,6 @@ async function loadCompendium(){
             .then(res => res.json())
             .then(compData => {
               console.log(compData);
-              let compInfo;
               switch (compendiumItem[1]) {
                 case 'razas':
                   fetch('assets/layout/compendium/race_detail/index.html')
@@ -326,30 +339,76 @@ async function loadCompendium(){
                   break;
 
                 case 'clases':
-                  compInfo = `<h3>Barbarian</h3>
-                  <hr>
-                  <h4>Hit Points</h4>
-                  <p><b>Hit Dice: </b>1D${compData.hit_die} per level</p>
-                  <p><b>Hit Points at 1st Level: </b>${compData.hit_die} + CONS</p>
-                  <p><b>Hit Points at Higher Levels: </b>1D${compData.hit_die} (or ${compData.hit_die/2}) + CONS per level after the 1st</p>
-                  <hr>
-                  <h4>Proficiencies</h4>
-                  <span style="display: flex; flex-wrap:wrap">`;
-                  compData.proficiencies.forEach(proficiencie => compInfo += `<span style="padding: 0 10px">${proficiencie.name}</span>`);
-                  compData.proficiency_choices.forEach(proficiencieChoice => compInfo += `<span style="width: 100%; padding: 10px 10px">${proficiencieChoice.desc}</span>`);
-                  compInfo += `</span>
-                  <hr>
-                  <h4>Equipment</h4>
-                  <span style="display: flex; flex-direction: column; flex-wrap:wrap">`;
-                  compData.starting_equipment.forEach(startEquip => compInfo += `<span style="padding: 0 10px">${startEquip.quantity} X ${startEquip.equipment.name}</span>`);
-                  compData.starting_equipment_options.forEach(startEquipOpt => compInfo += `<span style="padding: 0 10px">${startEquipOpt.desc}</span>`);
-                  compInfo += `</span>`;
+                  fetch('assets/layout/compendium/class_detail/index.html')
+                    .then(res => res.text())
+                    .then((html)=>{
+                      let classDetail = document.createElement('div');
+                      classDetail.innerHTML = html;
 
-                  Swal.fire({
-                    title: liTitle,
-                    html: compInfo,
-                    width: "80%",
-                  });
+                      // Class Name
+                      classDetail.querySelector('#class_name').innerText = compData.name;
+
+                      // Class Hit Dice-Points
+                      classDetail.querySelector('#class_hit_dice').innerText = `1D${compData.hit_die} per level`;
+                      classDetail.querySelector('#class_hit_points_1').innerText = `${compData.hit_die} + CON`;
+                      classDetail.querySelector('#class_hit_points').innerText = `1D${compData.hit_die} (or ${compData.hit_die/2}) + CON per level after the 1st`;
+
+                      // Class Saving Throws
+                      classDetail.querySelector('#class_saving_throws').innerHTML = `<h3>Saving Throws</h3>
+                                                                                    <div class="property-block">
+                                                                                      <div class="abilities" id="class_saving_throws_values">
+                                                                                      </div>
+                                                                                    </div>`;
+                      compData.saving_throws.forEach(saving_throw => {
+                        classDetail.querySelector('#class_saving_throws_values').innerHTML += `<div class="ability-strength">
+                                                                                                <h4>${saving_throw.name}</h4>
+                                                                                              </div>`;
+                      });
+
+                      // Class Proficiencies
+                      classDetail.querySelector('#class_proficiencies').innerHTML = `<h3>Proficiencies</h3>
+                                                                                    <div class="property-block">
+                                                                                      <div class="abilities" id="class_proficiencies_known">
+                                                                                      </div>
+                                                                                      <div class="abilities" id="class_proficiencies_option">
+                                                                                      </div>
+                                                                                    </div>`;
+                      compData.proficiencies.forEach(proficiency => {
+                        classDetail.querySelector('#class_proficiencies_known').innerHTML += `<div class="ability-strength">
+                                                                                                <h4>${proficiency.name}</h4>
+                                                                                              </div>`;
+                      });
+                      compData.proficiency_choices.forEach(proficiency_opt => {
+                        classDetail.querySelector('#class_proficiencies_option').innerHTML += `<hr>
+                                                                                               <h4>Choose ${proficiency_opt.choose} from:</h4>
+                                                                                               <br>`;
+                        proficiency_opt.from.options.forEach(option => {
+                          classDetail.querySelector('#class_proficiencies_option').innerHTML += `<div class="ability-strength">
+                                                                                                  <h4>${option.item.name}</h4>
+                                                                                                </div>`;
+                        });                                                       
+                      });
+
+                      // Class Equipment
+                      classDetail.querySelector('#class_equipment').innerHTML = `<h3>Equipment</h3>
+                                                                                <div class="property-block" id="class_equipment_items">
+                                                                                </div>`;
+                      compData.starting_equipment.forEach(equipment => {
+                        classDetail.querySelector('#class_equipment_items').innerHTML += `<div class="ability-strength">
+                                                                                            <h4>${equipment.quantity} x ${equipment.equipment.name}</h4>
+                                                                                          </div>`;
+                      });
+                      compData.starting_equipment_options.forEach(equipment_opt => {
+                        classDetail.querySelector('#class_equipment_items').innerHTML += `<div class="ability-strength">
+                                                                                            <h4>${equipment_opt.choose} x ${equipment_opt.desc}</h4>
+                                                                                          </div>`;
+                      });
+
+                      Swal.fire({
+                        html: classDetail.innerHTML,
+                        width: "80%",
+                      });
+                    });
                   break;
 
                 case 'bestiario':
