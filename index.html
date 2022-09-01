@@ -153,9 +153,6 @@
         <!-- <li class="toolbar_menu_option" menu_option="info">
           <i class="toolbar_menu_icon fa-lg fa-solid fa-circle-question"></i>
         </li> -->
-        <li class="toolbar_menu_option" menu_option="add_token">
-          <i class="fa-solid fa-user-plus"></i>
-        </li>
       </ul>
     </div>
 
@@ -170,6 +167,13 @@
           <li class="nav-item">
             <button class="nav-link active" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat-tab-pane" type="button" role="tab" aria-controls="chat-tab-pane" aria-selected="true">
               <i class="fa-solid fa-message"></i>
+            </button>
+          </li>
+
+          <!-- Tab de Tokens -->
+          <li class="nav-item">
+            <button class="nav-link" id="token-tab" data-bs-toggle="tab" data-bs-target="#token-tab-pane" type="button" role="tab" aria-controls="token-tab-pane" aria-selected="false">
+              <i class="fa-solid fa-user-tag"></i>
             </button>
           </li>
 
@@ -191,7 +195,7 @@
 
         <!-- inicio contenido de Tabs del menu lateral -->
         <div class="tab-content h-100" id="sideTabContent">
-          <!-- Contenido Tab de Chat -->
+          <!-- inicio Contenido Tab de Chat -->
           <div class="h-100 tab-pane fade show active" id="chat-tab-pane" role="tabpanel" aria-labelledby="chat-tab" tabindex="0">
             <div id="messages"></div>
             <div class="input-group mb-3">
@@ -199,30 +203,29 @@
               <button id="chatBtn" class="btn btn-secondary" type="button">Send</button>
             </div>
           </div>
+          <!-- fin Contenido Tab de Chat -->
+
+          <!-- inicio Contenido Tab de Tokens -->
+          <div class="h-100 tab-pane fade show active p-4" id="token-tab-pane" role="tabpanel" aria-labelledby="token-tab" tabindex="0">
+            <div class="row">
+              <div class="d-flex justify-content-center align-items-center mb-3">
+                <button id="add_token" type="button" class="btn btn-primary">Agregar Nuevo</button>
+              </div>
+              <div class="h-100 col-10 offset-1 bg-white" id="token_list">
+              </div>
+            </div>
+          </div>
+          <!-- fin Contenido Tab de Tokens -->
 
           <!-- inicio Contenido Tab de Compendio -->
           <div class="h-100 tab-pane bg-white fade" id="compendium-tab-pane" role="tabpanel" aria-labelledby="compendium-tab" tabindex="0">
             <!-- inicio Acordiones de Compendio -->
             <div class="accordion accordion-flush" id="accordionCompendio">
-              <!-- inicio Acordion Reglas -->
-              <!-- <div class="accordion-item">
-                <h2 class="accordion-header" id="compendio-reglas">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-reglas" aria-expanded="false" aria-controls="compendio-reglas">
-                    Reglas
-                  </button>
-                </h2>
-                <div id="compendio-content-reglas" class="accordion-collapse collapse" aria-labelledby="compendio-reglas" data-bs-parent="#accordionCompendio">
-                  <ul class="list-group list-group-flush" id="compendio-reglas-list">
-                  </ul>
-                </div>
-              </div> -->
-              <!-- fin Acordion Reglas -->
-
               <!-- inicio Acordion Razas -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="compendio-razas">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-razas" aria-expanded="false" aria-controls="compendio-content-razas">
-                    Razas
+                    <i class="fa-solid fa-people-arrows me-3"></i> Razas
                   </button>
                 </h2>
                 <div id="compendio-content-razas" class="accordion-collapse collapse" aria-labelledby="compendio-razas" data-bs-parent="#accordionCompendio">
@@ -236,7 +239,7 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="compendio-clases">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-clases" aria-expanded="false" aria-controls="compendio-content-clases">
-                    Clases
+                    <i class="fa-solid fa-shield me-3"></i> Clases
                   </button>
                 </h2>
                 <div id="compendio-content-clases" class="accordion-collapse collapse" aria-labelledby="compendio-clases" data-bs-parent="#accordionCompendio">
@@ -250,7 +253,7 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="compendio-bestiario">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-bestiario" aria-expanded="false" aria-controls="compendio-content-bestiario">
-                    Bestiario
+                    <i class="fa-solid fa-dragon me-3"></i> Bestiario
                   </button>
                 </h2>
                 <div id="compendio-content-bestiario" class="accordion-collapse collapse" aria-labelledby="compendio-bestiario" data-bs-parent="#accordionCompendio">
@@ -264,7 +267,7 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="compendio-conjuros">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compendio-content-conjuros" aria-expanded="false" aria-controls="compendio-content-conjuros">
-                    Conjuros
+                    <i class="fa-solid fa-wand-magic-sparkles me-3"></i> Conjuros
                   </button>
                 </h2>
                 <div id="compendio-content-conjuros" class="accordion-collapse collapse" aria-labelledby="compendio-conjuros" data-bs-parent="#accordionCompendio">

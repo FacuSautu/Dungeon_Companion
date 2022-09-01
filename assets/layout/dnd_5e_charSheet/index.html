@@ -12,27 +12,27 @@
     <form class="charsheet">
       <header>
         <section class="charname">
-          <label for="charname">Character Name</label><input name="charname" placeholder="Thoradin Fireforge" />
+          <label for="charname">Character Name</label><input name="charname" placeholder="Thoradin Fireforge" id="character_name"/>
         </section>
         <section class="misc">
           <ul>
             <li>
-              <label for="classlevel">Class & Level</label><input name="classlevel" placeholder="Paladin 2" />
+              <label for="classlevel">Class & Level</label><input name="classlevel" placeholder="Paladin 2" id="character_class_level"/>
             </li>
             <li>
-              <label for="background">Background</label><input name="background" placeholder="Acolyte" />
+              <label for="background">Background</label><input name="background" placeholder="Acolyte" id="character_background"/>
             </li>
             <li>
-              <label for="playername">Player Name</label><input name="playername" placeholder="Player McPlayerface">
+              <label for="playername">Player Name</label><input name="playername" placeholder="Player McPlayerface" id="character_player_name">
             </li>
             <li>
-              <label for="race">Race</label><input name="race" placeholder="Half-elf" />
+              <label for="race">Race</label><input name="race" placeholder="Half-elf" id="character_race"/>
             </li>
             <li>
-              <label for="alignment">Alignment</label><input name="alignment" placeholder="Lawful Good" />
+              <label for="alignment">Alignment</label><input name="alignment" placeholder="Lawful Good" id="character_alignment"/>
             </li>
             <li>
-              <label for="experiencepoints">Experience Points</label><input name="experiencepoints" placeholder="3240" />
+              <label for="experiencepoints">Experience Points</label><input name="experiencepoints" placeholder="3240" id="character_exp"/>
             </li>
           </ul>
         </section>
@@ -44,7 +44,7 @@
               <ul>
                 <li>
                   <div class="score">
-                    <label for="Strengthscore">Strength</label><input name="Strengthscore" placeholder="10" />
+                    <label for="Strengthscore">Strength</label><input name="Strengthscore" placeholder="10" id="character_str"/>
                   </div>
                   <div class="modifier">
                     <input name="Strengthmod" placeholder="+0" />
@@ -52,7 +52,7 @@
                 </li>
                 <li>
                   <div class="score">
-                    <label for="Dexterityscore">Dexterity</label><input name="Dexterityscore" placeholder="10" />
+                    <label for="Dexterityscore">Dexterity</label><input name="Dexterityscore" placeholder="10" id="character_dex"/>
                   </div>
                   <div class="modifier">
                     <input name="Dexteritymod" placeholder="+0" />
@@ -60,7 +60,7 @@
                 </li>
                 <li>
                   <div class="score">
-                    <label for="Constitutionscore">Constitution</label><input name="Constitutionscore" placeholder="10" />
+                    <label for="Constitutionscore">Constitution</label><input name="Constitutionscore" placeholder="10" id="character_con"/>
                   </div>
                   <div class="modifier">
                     <input name="Constitutionmod" placeholder="+0" />
@@ -68,15 +68,7 @@
                 </li>
                 <li>
                   <div class="score">
-                    <label for="Wisdomscore">Wisdom</label><input name="Wisdomscore" placeholder="10" />
-                  </div>
-                  <div class="modifier">
-                    <input name="Wisdommod" placeholder="+0" />
-                  </div>
-                </li>
-                <li>
-                  <div class="score">
-                    <label for="Intelligencescore">Intelligence</label><input name="Intelligencescore" placeholder="10" />
+                    <label for="Intelligencescore">Intelligence</label><input name="Intelligencescore" placeholder="10" id="character_int"/>
                   </div>
                   <div class="modifier">
                     <input name="Intelligencemod" placeholder="+0" />
@@ -84,7 +76,15 @@
                 </li>
                 <li>
                   <div class="score">
-                    <label for="Charismascore">Charisma</label><input name="Charismascore" placeholder="10" />
+                    <label for="Wisdomscore">Wisdom</label><input name="Wisdomscore" placeholder="10" id="character_wis"/>
+                  </div>
+                  <div class="modifier">
+                    <input name="Wisdommod" placeholder="+0" />
+                  </div>
+                </li>
+                <li>
+                  <div class="score">
+                    <label for="Charismascore">Charisma</label><input name="Charismascore" placeholder="10" id="character_cha"/>
                   </div>
                   <div class="modifier">
                     <input name="Charismamod" placeholder="+0" />
@@ -97,13 +97,13 @@
                 <div class="label-container">
                   <label for="inspiration">Inspiration</label>
                 </div>
-                <input name="inspiration" type="checkbox" />
+                <input name="inspiration" type="checkbox" id="character_inspiration"/>
               </div>
               <div class="proficiencybonus box">
                 <div class="label-container">
                   <label for="proficiencybonus">Proficiency Bonus</label>
                 </div>
-                <input name="proficiencybonus" placeholder="+2" />
+                <input name="proficiencybonus" placeholder="+2" id="character_proficiency_bonus"/>
               </div>
               <div class="saves list-section box">
                 <ul>
@@ -207,39 +207,39 @@
           <section class="combat">
             <div class="armorclass">
               <div>
-                <label for="ac">Armor Class</label><input name="ac" placeholder="10" type="text" />
+                <label for="ac">Armor Class</label><input name="ac" placeholder="10" type="text" id="character_AC"/>
               </div>
             </div>
             <div class="initiative">
               <div>
-                <label for="initiative">Initiative</label><input name="initiative" placeholder="+0" type="text" />
+                <label for="initiative">Initiative</label><input name="initiative" placeholder="+0" type="text" id="character_initiative"/>
               </div>
             </div>
             <div class="speed">
               <div>
-                <label for="speed">Speed</label><input name="speed" placeholder="30" type="text" />
+                <label for="speed">Speed</label><input name="speed" placeholder="30" type="text" id="character_speed"/>
               </div>
             </div>
             <div class="hp">
               <div class="regular">
                 <div class="max">
-                  <label for="maxhp">Hit Point Maximum</label><input name="maxhp" placeholder="10" type="text" />
+                  <label for="maxhp">Hit Point Maximum</label><input name="maxhp" placeholder="10" type="text" id="character_max_hp"/>
                 </div>
                 <div class="current">
-                  <label for="currenthp">Current Hit Points</label><input name="currenthp" type="text" />
+                  <label for="currenthp">Current Hit Points</label><input name="currenthp" type="text" id="character_current_hp"/>
                 </div>
               </div>
               <div class="temporary">
-                <label for="temphp">Temporary Hit Points</label><input name="temphp" type="text" />
+                <label for="temphp">Temporary Hit Points</label><input name="temphp" type="text" id="character_temp_hp"/>
               </div>
             </div>
             <div class="hitdice">
               <div>
                 <div class="total">
-                  <label for="totalhd">Total</label><input name="totalhd" placeholder="2d10" type="text" />
+                  <label for="totalhd">Total</label><input name="totalhd" placeholder="2d10" type="text" id="character_hit_dice"/>
                 </div>
                 <div class="remaining">
-                  <label for="remaininghd">Hit Dice</label><input name="remaininghd" type="text" />
+                  <label for="remaininghd">Hit Dice</label><input name="remaininghd" type="text" id="character_num_hit_dice"/>
                 </div>
               </div>
             </div>

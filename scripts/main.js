@@ -1,8 +1,12 @@
 // Constantes para obtener elementos del DOM.
 const canvas = document.getElementById('canvas');
+
 const chatLog = document.getElementById('messages');
 const chatBtn = document.getElementById('chatBtn');
 const chatBox = document.getElementById('chatInput');
+
+const addTokenBtn = document.getElementById('add_token');
+
 const toolbarMenu = document.querySelectorAll('.toolbar_menu_option');
 const toolbarSubmenu = document.querySelectorAll('.toolbar_submenu_option');
 
@@ -44,7 +48,7 @@ chatBox.addEventListener('keypress', (e) =>{
   }
 });
 
-// Eventos para manejar el movimiento de los token.
+// Eventos para manejar el movimiento de los token y objetos.
 canvas.addEventListener('mousedown', (e)=>{
   switch (map.activeLayerName) {
     case 'objects&tokens':
@@ -126,7 +130,7 @@ canvas.addEventListener('dblclick', (e)=>{
 });
 
 // Evento para envitar el boton derecho en el canvas.
-canvas.addEventListener('conhtmlmenu', e => e.preventDefault());
+canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 // Evento para el zoom en el canvas.
 canvas.addEventListener('wheel', map.handleWheel);
@@ -154,6 +158,58 @@ canvas.addEventListener('drop', (e) => {
   map.addImage(mapImg);
 });
 
+// Eventos del panel lateral.
+addTokenBtn.addEventListener('click', e => {
+  fetch('assets/layout/dnd_5e_charSheet/index.html')
+    .then(res => res.text())
+    .then((html) => {
+      Swal.fire({
+        title: 'Cargar Token',
+        html,
+        width: "80%",
+        confirmButtonText: 'Cargar',
+        showCancelButton: true,
+        preConfirm: () => {
+          let nombre = document.getElementById('character_').value;
+          let nombre_jugador = document.getElementById('character_').value;
+          let clase = document.getElementById('character_').value;
+          let raza = document.getElementById('character_').value;
+          let trasfondo = document.getElementById('character_').value;
+          let alineamiento = document.getElementById('character_').value;
+          let exp = document.getElementById('character_').value;
+          let str = document.getElementById('character_').value;
+          let dex = document.getElementById('character_').value;
+          let con = document.getElementById('character_').value;
+          let int = document.getElementById('character_').value;
+          let wis = document.getElementById('character_').value;
+          let cha = document.getElementById('character_').value;
+
+          let inspiracion = document.getElementById('character_').value;
+
+          let competencia = document.getElementById('character_').value;
+
+          let ca = document.getElementById('character_').value;
+          let iniciativa = document.getElementById('character_').value;
+          let velocidad = document.getElementById('character_').value;
+          let vida = document.getElementById('character_').value;
+
+          if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
+            return false;
+          }
+        },
+      }).then((alertValue)=>{
+        if(alertValue.value){
+          let tokenName = document.getElementById('tokenName').value;
+          let tokenPJ = (document.getElementById('tokenPJ').value == 1) ? new HojaPJ(garret) : new HojaPJ(leosariph);
+          let tokenImg = document.getElementById('tokenImg').value;
+
+          let newToken = new Token(2, 300, 300, map.gridSize/2, tokenPJ,tokenImg);
+
+          map.addToken(newToken);
+        }
+      });
+    });
+});
 
 // Funcionamiento del toolbar
 toolbarMenu.forEach((menuOption) => {
@@ -166,42 +222,8 @@ toolbarMenu.forEach((menuOption) => {
       toolbarMenu.forEach((li) => li.classList.remove('active'));
       menuOption.classList.add('active');
     }
-
-    if (slctdMenuOpt == 'add_token') {
-      fetch('assets/layout/dnd_5e_charSheet/index.html')
-        .then(res => res.text())
-        .then((html) => {
-          Swal.fire({
-            title: 'Cargar Token',
-            html,
-            width: "80%",
-            confirmButtonText: 'Cargar',
-            showCancelButton: true,
-            preConfirm: () => {
-              let tokenName = document.getElementById('tokenName');
-              let tokenPJ = document.getElementById('tokenPJ');
-              let tokenImg = document.getElementById('tokenImg');
-
-              if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
-                return false;
-              }
-            },
-          }).then((alertValue)=>{
-            if(alertValue.value){
-              let tokenName = document.getElementById('tokenName').value;
-              let tokenPJ = (document.getElementById('tokenPJ').value == 1) ? new HojaPJ(garret) : new HojaPJ(leosariph);
-              let tokenImg = document.getElementById('tokenImg').value;
-
-              let newToken = new Token(2, 300, 300, map.gridSize/2, tokenPJ,tokenImg);
-
-              map.addToken(newToken);
-            }
-          });
-        });
-    }else{
-      // Cambio de valores en el objeto Map.
-      map.setUtilityOpt('utility', slctdMenuOpt);
-    }
+    // Cambio de valores en el objeto Map.
+    map.setUtilityOpt('utility', slctdMenuOpt);
   });
 });
 

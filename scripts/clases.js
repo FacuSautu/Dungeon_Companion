@@ -687,7 +687,7 @@ class HojaPJ{
 
     this.proficiency = PJ.proficiency;
 
-    this.CA = PJ.CA;
+    this.AC = PJ.AC;
     this.initiative = PJ.initiative;
     this.speed = PJ.speed;
     this.HP = PJ.HP;
