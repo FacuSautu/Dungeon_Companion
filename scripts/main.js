@@ -63,7 +63,7 @@ canvas.addEventListener('mousedown', (e)=>{
         map.handleMouseDown(e);
       }
       break;
-  
+
     case 'map&background':
       map.images.slice().reverse().forEach(mapImg => {
         mapImg.handleMouseDown(e);
@@ -77,9 +77,9 @@ canvas.addEventListener('mousemove', (e)=>{
       map.tokens.forEach((token) => {
         token.handleMovement(e);
       });
-      map.handleMouseMove(e);   
+      map.handleMouseMove(e);
       break;
-  
+
     case 'map&background':
       map.images.forEach((mapImg) => {
         mapImg.handleMouseMove(e);
@@ -93,9 +93,9 @@ canvas.addEventListener('mouseup', (e)=>{
       map.tokens.forEach((token) => {
         token.handleMovement(e);
       });
-      map.handleMouseUp(e);   
+      map.handleMouseUp(e);
       break;
-  
+
     case 'map&background':
       map.images.forEach((mapImg) => {
         mapImg.handleMouseUp(e);
@@ -104,10 +104,20 @@ canvas.addEventListener('mouseup', (e)=>{
   }
 });
 canvas.addEventListener('mouseleave', (e)=>{
-  tokens.forEach((token) => {
-    token.handleMovement(e);
-  });
-  map.handleMouseLeave(e);
+  switch (map.activeLayerName) {
+    case 'objects&tokens':
+      map.tokens.forEach((token) => {
+        token.handleMovement(e);
+      });
+      map.handleMouseLeave(e);
+      break;
+
+    case 'map&background':
+      map.images.forEach((mapImg) => {
+        mapImg.handleMouseLeave(e);
+      });
+      break;
+  }
 });
 canvas.addEventListener('dblclick', (e)=>{
   tokens.slice().reverse().forEach((token) => {
@@ -140,7 +150,7 @@ canvas.addEventListener('drop', (e) => {
   }
   reader.readAsDataURL(file);
 
-  const mapImg = new mapImage(image, 800, 900);
+  const mapImg = new mapImage(image, 300, 300);
   map.addImage(mapImg);
 });
 
@@ -386,7 +396,7 @@ async function loadCompendium(){
                           classDetail.querySelector('#class_proficiencies_option').innerHTML += `<div class="ability-strength">
                                                                                                   <h4>${option.item.name}</h4>
                                                                                                 </div>`;
-                        });                                                       
+                        });
                       });
 
                       // Class Equipment
