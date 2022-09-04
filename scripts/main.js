@@ -7,38 +7,35 @@ const chatBox = document.getElementById('chatInput');
 
 const addTokenBtn = document.getElementById('add_token');
 
-const saveBtn = document.getElementById('save_game');
+const saveTokensBtn = document.getElementById('save_tokens');
+const deleteSavedTokensBtn = document.getElementById('delete_saved_tokens');
 
 const toolbarMenu = document.querySelectorAll('.toolbar_menu_option');
 const toolbarSubmenu = document.querySelectorAll('.toolbar_submenu_option');
 
-let map;
+let tokens;
 
 // Instanciación de objetos.
-if(localStorage.getItem('map')){
+if(localStorage.getItem('tokens')){
   let savedTokens = JSON.parse(localStorage.getItem('tokens'));
-  let savedMap = JSON.parse(localStorage.getItem('map'));
 
-  const tokens = [];
+  tokens = [];
 
   savedTokens.forEach(token => {
     let newToken = new Token(token.id, token.x, token.y, token.radius, token.hojaPJ, token.image_src);
     tokens.push(newToken);
   });
-  console.log(savedMap.gridSize, savedTokens, savedMap.drawings, savedMap.images);
-  map = new DungeonMap(canvas, 2000, 2000, savedMap.gridSize, tokens, savedMap.drawings, savedMap.images);
-  map.renderGrid();
-  map.update();
 }else{
   const PJs = [new HojaPJ(garret), new HojaPJ(leosariph)];
-  const tokens = [
+  tokens = [
     new Token(0, 20, 20, 30, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
     new Token(1, 100, 100, 30, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
   ];
-  map = new DungeonMap(canvas, 2000, 2000, 60, tokens);
-  map.renderGrid();
-  map.update();
 }
+
+map = new DungeonMap(canvas, 2000, 2000, 60, tokens);
+map.renderGrid();
+map.update();
 
 const engine = new Engine(1000/30, update, render);
 
@@ -287,8 +284,11 @@ addTokenBtn.addEventListener('click', e => {
       });
     });
 });
-saveBtn.addEventListener('click', ()=>{
-  saveGame();
+saveTokensBtn.addEventListener('click', ()=>{
+  saveTokens();
+});
+deleteSavedTokensBtn.addEventListener('click', ()=>{
+  deleteSavedTokens();
 });
 
 // Funcionamiento del toolbar
@@ -918,12 +918,15 @@ function deleteToken(id){
   listTokens();
 }
 
-function saveGame(){
+function saveTokens(){
   let tokensToSave = map.tokens.map(token => {
     token.image_src = token.image.src
     return token
   });
-  console.log(tokensToSave);
+
   localStorage.setItem('tokens', JSON.stringify(tokensToSave));
-  localStorage.setItem('map', JSON.stringify(map));
+}
+
+function deleteSavedTokens(){
+  localStorage.removeItem('tokens');
 }
