@@ -7,27 +7,43 @@ const chatBox = document.getElementById('chatInput');
 
 const addTokenBtn = document.getElementById('add_token');
 
+const saveBtn = document.getElementById('save_game');
+
 const toolbarMenu = document.querySelectorAll('.toolbar_menu_option');
 const toolbarSubmenu = document.querySelectorAll('.toolbar_submenu_option');
 
+let map;
+
 // Instanciación de objetos.
-const PJs = [new HojaPJ(garret), new HojaPJ(leosariph)];
-const tokens = [
-  new Token(0, 20, 20, 30, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
-  new Token(1, 100, 100, 30, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
-];
-const map = new DungeonMap(canvas, 2000, 2000, 60, tokens);
-map.renderGrid();
-map.update();
+if(localStorage.getItem('map')){
+  let savedTokens = JSON.parse(localStorage.getItem('tokens'));
+  let savedMap = JSON.parse(localStorage.getItem('map'));
+
+  const tokens = [];
+
+  savedTokens.forEach(token => {
+    let newToken = new Token(token.id, token.x, token.y, token.radius, token.hojaPJ, token.image_src);
+    tokens.push(newToken);
+  });
+  console.log(savedMap.gridSize, savedTokens, savedMap.drawings, savedMap.images);
+  map = new DungeonMap(canvas, 2000, 2000, savedMap.gridSize, tokens, savedMap.drawings, savedMap.images);
+  map.renderGrid();
+  map.update();
+}else{
+  const PJs = [new HojaPJ(garret), new HojaPJ(leosariph)];
+  const tokens = [
+    new Token(0, 20, 20, 30, PJs[0], 'assets/img/tokens/Garret_token.jpg'),
+    new Token(1, 100, 100, 30, PJs[1], 'assets/img/tokens/Leosariph_token.jpg')
+  ];
+  map = new DungeonMap(canvas, 2000, 2000, 60, tokens);
+  map.renderGrid();
+  map.update();
+}
 
 const engine = new Engine(1000/30, update, render);
 
-const user = new User('Facu', true, tokens);
+const user = new User('Facu', true, map.tokens);
 const chat = new Chat(user, chatLog);
-
-
-// Carga de datos por API
-loadCompendium();
 
 
 // Definición de Event Listeners.
@@ -160,7 +176,7 @@ canvas.addEventListener('drop', (e) => {
 
 // Eventos del panel lateral.
 addTokenBtn.addEventListener('click', e => {
-  fetch('assets/layout/dnd_5e_charSheet/index.html')
+  fetch('assets/layout/tokens/dnd_5e_charSheet/index.html')
     .then(res => res.text())
     .then((html) => {
       Swal.fire({
@@ -170,45 +186,109 @@ addTokenBtn.addEventListener('click', e => {
         confirmButtonText: 'Cargar',
         showCancelButton: true,
         preConfirm: () => {
-          let nombre = document.getElementById('character_').value;
-          let nombre_jugador = document.getElementById('character_').value;
-          let clase = document.getElementById('character_').value;
-          let raza = document.getElementById('character_').value;
-          let trasfondo = document.getElementById('character_').value;
-          let alineamiento = document.getElementById('character_').value;
-          let exp = document.getElementById('character_').value;
-          let str = document.getElementById('character_').value;
-          let dex = document.getElementById('character_').value;
-          let con = document.getElementById('character_').value;
-          let int = document.getElementById('character_').value;
-          let wis = document.getElementById('character_').value;
-          let cha = document.getElementById('character_').value;
+          let nombre = document.getElementById('character_name').value;
+          let nombre_jugador = document.getElementById('character_player_name').value;
+          let clase = document.getElementById('character_class').value;
+          let raza = document.getElementById('character_race').value;
+          let trasfondo = document.getElementById('character_background').value;
+          let alineamiento = document.getElementById('character_alignment').value;
+          let exp = document.getElementById('character_exp').value;
+          let str = document.getElementById('character_str').value;
+          let dex = document.getElementById('character_dex').value;
+          let con = document.getElementById('character_con').value;
+          let int = document.getElementById('character_int').value;
+          let wis = document.getElementById('character_wis').value;
+          let cha = document.getElementById('character_cha').value;
 
-          let inspiracion = document.getElementById('character_').value;
+          let inspiracion = document.getElementById('character_inspiration').value;
 
-          let competencia = document.getElementById('character_').value;
+          let competencia = document.getElementById('character_proficiency_bonus').value;
 
-          let ca = document.getElementById('character_').value;
-          let iniciativa = document.getElementById('character_').value;
-          let velocidad = document.getElementById('character_').value;
-          let vida = document.getElementById('character_').value;
+          let ca = document.getElementById('character_AC').value;
+          let iniciativa = document.getElementById('character_initiative').value;
+          let velocidad = document.getElementById('character_speed').value;
+          let vida_maxima = document.getElementById('character_max_hp').value;
+          let vida_actual = document.getElementById('character_current_hp').value;
 
-          if(!tokenName.value || !tokenPJ.value || !tokenImg.value){
+          let token_img = document.getElementById('token_image').value;
+          let token_x = document.getElementById('token_x').value;
+          let token_y = document.getElementById('token_y').value;
+
+          if(!nombre || !token_img || !token_x || !token_y){
+            Swal.showValidationMessage(
+              `Debe completar los datos necesarios (Nombre PJ, imagen, x, y)`
+            );
             return false;
           }
         },
       }).then((alertValue)=>{
         if(alertValue.value){
-          let tokenName = document.getElementById('tokenName').value;
-          let tokenPJ = (document.getElementById('tokenPJ').value == 1) ? new HojaPJ(garret) : new HojaPJ(leosariph);
-          let tokenImg = document.getElementById('tokenImg').value;
+          let nombre = document.getElementById('character_name').value;
+          let nombre_jugador = document.getElementById('character_player_name').value;
+          let clase = document.getElementById('character_class').value;
+          let raza = document.getElementById('character_race').value;
+          let trasfondo = document.getElementById('character_background').value;
+          let alineamiento = document.getElementById('character_alignment').value;
+          let exp = document.getElementById('character_exp').value;
+          let str = document.getElementById('character_str').value;
+          let dex = document.getElementById('character_dex').value;
+          let con = document.getElementById('character_con').value;
+          let int = document.getElementById('character_int').value;
+          let wis = document.getElementById('character_wis').value;
+          let cha = document.getElementById('character_cha').value;
 
-          let newToken = new Token(2, 300, 300, map.gridSize/2, tokenPJ,tokenImg);
+          let inspiracion = document.getElementById('character_inspiration').value;
+
+          let competencia = document.getElementById('character_proficiency_bonus').value;
+
+          let ca = document.getElementById('character_AC').value;
+          let iniciativa = document.getElementById('character_initiative').value;
+          let velocidad = document.getElementById('character_speed').value;
+          let vida_maxima = document.getElementById('character_max_hp').value;
+          let vida_actual = document.getElementById('character_current_hp').value;
+
+          let token_img = document.getElementById('token_image').value;
+          let token_x = document.getElementById('token_x').value;
+          let token_y = document.getElementById('token_y').value;
+
+          let token_id = map.getMaxTokenId()+1;
+
+          let newHojaPJ = new HojaPJ({
+            namePJ: nombre,
+            nameJugador: nombre_jugador,
+            class: clase,
+            race: raza,
+            background: trasfondo,
+            alignment: alineamiento,
+            exp: Number(exp),
+            STR: Number(str),
+            STRMod: Math.floor((Number(str)-10)/2),
+            DEX: Number(dex),
+            DEXMod: Math.floor((Number(dex)-10)/2),
+            CON: Number(con),
+            CONMod: Math.floor((Number(con)-10)/2),
+            INT: Number(int),
+            INTMod: Math.floor((Number(int)-10)/2),
+            WIS: Number(wis),
+            WISMod: Math.floor((Number(wis)-10)/2),
+            CHA: Number(cha),
+            CHAMod: Math.floor((Number(cha)-10)/2),
+            proficiency: Number(competencia),
+            CA: Number(ca),
+            initiative: iniciativa,
+            speed: Number(velocidad),
+            HP: Number(vida_actual) || Number(vida_maxima)
+          });
+          let newToken = new Token(token_id, token_x, token_y, 30, newHojaPJ, token_img);
 
           map.addToken(newToken);
+          listTokens();
         }
       });
     });
+});
+saveBtn.addEventListener('click', ()=>{
+  saveGame();
 });
 
 // Funcionamiento del toolbar
@@ -261,6 +341,11 @@ toolbarSubmenu.forEach((submenuOption) => {
 });
 
 
+
+// Listado de tokens
+listTokens();
+// Carga de datos por API
+loadCompendium();
 
 // Inicializacion del motor.
 engine.start();
@@ -648,4 +733,197 @@ async function loadCompendium(){
     })
     .catch(error => alert("Error de API:\n"+error));
   });
+}
+
+function listTokens(){
+  const token_list_display = document.getElementById('token_list');
+  token_list_display.innerText = '';
+
+  map.tokens.forEach(token => {
+    let token_li = document.createElement('li');
+    token_li.setAttribute('class', 'list-group-item');
+    token_li.innerText = `${token.hojaPJ.namePJ}`;
+
+    token_list_display.append(token_li);
+
+    token_li.addEventListener('click', ()=>{
+      displayTokenInfo(token);
+    });
+  });
+}
+
+function displayTokenInfo(token){
+  fetch('assets/layout/tokens/dnd_5e_charSheet/index.html')
+  .then(res => res.text())
+  .then((html) => {
+    let display_info = document.createElement('div');
+    display_info.innerHTML = html;
+
+    display_info.querySelector('#button_heading').innerHTML = `<button class="btn btn-danger" onClick="deleteToken(${token.id}); Swal.close()">Borrar Personaje</button>`;
+    
+    display_info.querySelector('#character_name').setAttribute('value', token.hojaPJ.namePJ);
+    display_info.querySelector('#character_player_name').setAttribute('value', token.hojaPJ.nameJugador);
+    display_info.querySelector('#character_class').setAttribute('value', token.hojaPJ.class);
+    display_info.querySelector('#character_race').setAttribute('value', token.hojaPJ.race);
+    display_info.querySelector('#character_background').setAttribute('value', token.hojaPJ.background);
+    display_info.querySelector('#character_alignment').setAttribute('value', token.hojaPJ.alignment);
+    display_info.querySelector('#character_exp').setAttribute('value', token.hojaPJ.exp);
+    display_info.querySelector('#character_str').setAttribute('value', token.hojaPJ.STR);
+    display_info.querySelector('#character_str_mod').setAttribute('value', Math.floor((token.hojaPJ.STR-10)/2));
+    display_info.querySelector('#character_dex').setAttribute('value', token.hojaPJ.DEX);
+    display_info.querySelector('#character_dex_mod').setAttribute('value', Math.floor((token.hojaPJ.DEX-10)/2));
+    display_info.querySelector('#character_con').setAttribute('value', token.hojaPJ.CON);
+    display_info.querySelector('#character_con_mod').setAttribute('value', Math.floor((token.hojaPJ.CON-10)/2));
+    display_info.querySelector('#character_int').setAttribute('value', token.hojaPJ.INT);
+    display_info.querySelector('#character_int_mod').setAttribute('value', Math.floor((token.hojaPJ.INT-10)/2));
+    display_info.querySelector('#character_wis').setAttribute('value', token.hojaPJ.WIS);
+    display_info.querySelector('#character_wis_mod').setAttribute('value', Math.floor((token.hojaPJ.WIS-10)/2));
+    display_info.querySelector('#character_cha').setAttribute('value', token.hojaPJ.CHA);
+    display_info.querySelector('#character_cha_mod').setAttribute('value', Math.floor((token.hojaPJ.CHA-10)/2));
+    display_info.querySelector('#character_inspiration').setAttribute('value', token.hojaPJ.inspiration);
+    display_info.querySelector('#character_proficiency_bonus').setAttribute('value', token.hojaPJ.proficiency);
+    display_info.querySelector('#character_AC').setAttribute('value', token.hojaPJ.AC);
+    display_info.querySelector('#character_initiative').setAttribute('value', token.hojaPJ.initiative);
+    display_info.querySelector('#character_speed').setAttribute('value', token.hojaPJ.speed);
+    display_info.querySelector('#character_max_hp').setAttribute('value', token.hojaPJ.HP);
+    display_info.querySelector('#character_current_hp').setAttribute('value', token.hojaPJ.HP);
+    display_info.querySelector('#token_image').setAttribute('value', token.image.src);
+    display_info.querySelector('#token_x').setAttribute('value', token.x);
+    display_info.querySelector('#token_y').setAttribute('value', token.y);
+
+    Swal.fire({
+      title: 'Cargar Token',
+      html: display_info.innerHTML,
+      width: "80%",
+      confirmButtonText: 'Cargar',
+      showCancelButton: true,
+      preConfirm: () => {
+        let nombre = document.getElementById('character_name').value;
+        let nombre_jugador = document.getElementById('character_player_name').value;
+        let clase = document.getElementById('character_class').value;
+        let raza = document.getElementById('character_race').value;
+        let trasfondo = document.getElementById('character_background').value;
+        let alineamiento = document.getElementById('character_alignment').value;
+        let exp = document.getElementById('character_exp').value;
+        let str = document.getElementById('character_str').value;
+        let dex = document.getElementById('character_dex').value;
+        let con = document.getElementById('character_con').value;
+        let int = document.getElementById('character_int').value;
+        let wis = document.getElementById('character_wis').value;
+        let cha = document.getElementById('character_cha').value;
+
+        let inspiracion = document.getElementById('character_inspiration').value;
+
+        let competencia = document.getElementById('character_proficiency_bonus').value;
+
+        let ca = document.getElementById('character_AC').value;
+        let iniciativa = document.getElementById('character_initiative').value;
+        let velocidad = document.getElementById('character_speed').value;
+        let vida_maxima = document.getElementById('character_max_hp').value;
+        let vida_actual = document.getElementById('character_current_hp').value;
+
+        let token_img = document.getElementById('token_image').value;
+        let token_x = document.getElementById('token_x').value;
+        let token_y = document.getElementById('token_y').value;
+
+        if(!nombre || !token_img || !token_x || !token_y){
+          Swal.showValidationMessage(
+            `Debe completar los datos necesarios (Nombre PJ, imagen, x, y)`
+          );
+          return false;
+        }
+      },
+    }).then((alertValue)=>{
+      if(alertValue.value){
+        let nombre = document.getElementById('character_name').value;
+        let nombre_jugador = document.getElementById('character_player_name').value;
+        let clase = document.getElementById('character_class').value;
+        let raza = document.getElementById('character_race').value;
+        let trasfondo = document.getElementById('character_background').value;
+        let alineamiento = document.getElementById('character_alignment').value;
+        let exp = document.getElementById('character_exp').value;
+        let str = document.getElementById('character_str').value;
+        let dex = document.getElementById('character_dex').value;
+        let con = document.getElementById('character_con').value;
+        let int = document.getElementById('character_int').value;
+        let wis = document.getElementById('character_wis').value;
+        let cha = document.getElementById('character_cha').value;
+
+        let inspiracion = document.getElementById('character_inspiration').value;
+
+        let competencia = document.getElementById('character_proficiency_bonus').value;
+
+        let ca = document.getElementById('character_AC').value;
+        let iniciativa = document.getElementById('character_initiative').value;
+        let velocidad = document.getElementById('character_speed').value;
+        let vida_maxima = document.getElementById('character_max_hp').value;
+        let vida_actual = document.getElementById('character_current_hp').value;
+
+        let token_img = document.getElementById('token_image').value;
+        let token_x = document.getElementById('token_x').value;
+        let token_y = document.getElementById('token_y').value;
+
+        let newHojaPJ = new HojaPJ({
+          namePJ: nombre,
+          nameJugador: nombre_jugador,
+          class: clase,
+          race: raza,
+          background: trasfondo,
+          alignment: alineamiento,
+          exp: Number(exp),
+          STR: Number(str),
+          STRMod: Math.floor((Number(str)-10)/2),
+          DEX: Number(dex),
+          DEXMod: Math.floor((Number(dex)-10)/2),
+          CON: Number(con),
+          CONMod: Math.floor((Number(con)-10)/2),
+          INT: Number(int),
+          INTMod: Math.floor((Number(int)-10)/2),
+          WIS: Number(wis),
+          WISMod: Math.floor((Number(wis)-10)/2),
+          CHA: Number(cha),
+          CHAMod: Math.floor((Number(cha)-10)/2),
+          proficiency: Number(competencia),
+          AC: Number(ca),
+          initiative: iniciativa,
+          speed: Number(velocidad),
+          HP: Number(vida_actual) || Number(vida_maxima)
+        });
+
+        let new_token_img
+        if(token_img){
+          new_token_img = new Image();
+          new_token_img.src = token_img;
+        }
+
+        token.x = token_x;
+        token.y = token_y;
+        token.hojaPJ = newHojaPJ;
+        if (token_img) {
+          token.image = new_token_img
+        }
+
+        map.addToken(newToken);
+        listTokens();
+      }
+    });
+  });
+}
+
+function deleteToken(id){
+  let tokenToDelete = map.tokens.find(token => token.id == id);
+  let tokenToDeleteIndex = map.tokens.indexOf(tokenToDelete);
+  map.tokens.splice(tokenToDeleteIndex, 1);
+
+  listTokens();
+}
+
+function saveGame(){
+  let tokensToSave = map.tokens.map(token => {
+    token.image_src = token.image.src
+    return token
+  });
+  console.log(tokensToSave);
+  localStorage.setItem('tokens', JSON.stringify(tokensToSave));
+  localStorage.setItem('map', JSON.stringify(map));
 }

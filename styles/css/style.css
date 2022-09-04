@@ -120,7 +120,7 @@ body {
   padding: 20px;
 }
 
-#sideContent #compendium-tab-pane {
+#sideContent #token_list_container, #sideContent #compendium-tab-pane {
   overflow-y: scroll;
 }
 

@@ -19,7 +19,7 @@ let garret = {
   CHA: 16,
   CHAMod: +3,
   proficiency: +2,
-  CA: 14,
+  AC: 14,
   initiative: +3,
   speed: 25,
   HP: 9
@@ -46,7 +46,7 @@ let leosariph = {
   CHA: 16,
   CHAMod: +3,
   proficiency: +2,
-  CA: 14,
+  AC: 14,
   initiative: +3,
   speed: 30,
   HP: 9

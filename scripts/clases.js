@@ -1,6 +1,6 @@
 // Clase Display
 class DungeonMap{
-  constructor(canvas, width, height, gridSize, tokens){
+  constructor(canvas, width, height, gridSize, tokens, drawings, images){
     this.canvas = canvas;
     this.canvas.width = Math.ceil(width/gridSize)*gridSize;
     this.canvas.height = Math.ceil(height/gridSize)*gridSize;
@@ -26,8 +26,8 @@ class DungeonMap{
     this.gridSize = gridSize || 60;
 
     this.tokens = tokens || [];
-    this.drawings = [];
-    this.images = [];
+    this.drawings = drawings || [];
+    this.images = images || [];
 
     this.utilities = {
       select: {
@@ -156,6 +156,16 @@ class DungeonMap{
       this.ctx.lineTo(i, this.canvas.width);
     }
     this.ctx.stroke();
+  }
+
+  getMaxTokenId(){
+    let maxId = 0;
+
+    this.tokens.forEach(token => {
+      maxId = (token.id > maxId) ? token.id : maxId;
+    });
+
+    return maxId;
   }
 
   addToken(token){
