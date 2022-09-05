@@ -24,6 +24,10 @@ class DungeonMap{
     this.clickOffsetY = 0;
 
     this.gridSize = gridSize || 60;
+    this.gridDistanceReference = { 
+      convertion_index: 5,
+      units: 'ft' 
+    };
 
     this.tokens = tokens || [];
     this.drawings = drawings || [];
@@ -52,8 +56,7 @@ class DungeonMap{
           circle: false,
           path: false,
           polygon: false,
-          text: false,
-          clear: false
+          text: false
         },
         variables: {
           shape: undefined,
@@ -71,6 +74,18 @@ class DungeonMap{
           snap_center: false,
           snap_corner: false,
           no_snap: false
+        },
+        variables: {
+          shape: undefined,
+          startX: 0,
+          startY: 0,
+          color: 'black',
+          weight: '2px',
+          font: 'Arial',
+          font_height: '16px',
+          text: '',
+          textX: 0,
+          textY: 0
         }
       },
       fog: {
@@ -90,6 +105,8 @@ class DungeonMap{
         this.movementController(e);
       }else if (this.utilities.draw.active) {
         this.drawShapes(e);
+      }else if (this.utilities.measure.active) {
+        this.showMeasure(e);
       }
     };
 
@@ -98,6 +115,8 @@ class DungeonMap{
         this.movementController(e);
       }else if (this.utilities.draw.active) {
         this.drawShapes(e);
+      }else if (this.utilities.measure.active) {
+        this.showMeasure(e);
       }
     };
 
@@ -106,6 +125,8 @@ class DungeonMap{
         this.movementController(e);
       }else if (this.utilities.draw.active) {
         this.drawShapes(e);
+      }else if (this.utilities.measure.active) {
+        this.showMeasure(e);
       }
     };
 
@@ -118,6 +139,7 @@ class DungeonMap{
     this.handleWheel = (e) => this.zoom(e);
   }
 
+  // Funcion para cambiar la utilidad activa.
   setUtilityOpt(toChange, utility, option){
     switch (toChange) {
       case 'utility':
@@ -143,6 +165,7 @@ class DungeonMap{
     }
   }
 
+  // Funcion para renderizar la Grilla.
   renderGrid(){
     this.ctx.strokeStyle = 'black';
 
@@ -158,6 +181,7 @@ class DungeonMap{
     this.ctx.stroke();
   }
 
+  // Funcion para obtener el id de token maximo.
   getMaxTokenId(){
     let maxId = 0;
 
@@ -168,19 +192,23 @@ class DungeonMap{
     return maxId;
   }
 
+  // Funcion para agregar un token al mapa.
   addToken(token){
     this.tokens.push(token);
   }
 
+  // Funcion para agregar una imagen al mapa.
   addImage(img){
     this.images.push(img);
   }
 
+  // Funcion para cambiar la capa activa.
   setActiveLayer(layer){
     this.activeLayerName = layer;
     this.activeLayer = this.layers[layer];
   }
 
+  // Funcion para hacer zoom en el mapa.
   zoom(event, value){
     if (event.type == 'wheel' && event.ctrlKey) {
       event.preventDefault();
@@ -194,6 +222,7 @@ class DungeonMap{
     }
   }
 
+  // Funcion para el movimiento del mapa.
   movementController(event){
     if (event.type == 'mousedown' && (this.utilities.select.options.pan_view || event.ctrlKey)) {
       this.canvas.style.cursor = 'move';
@@ -211,6 +240,7 @@ class DungeonMap{
     }
   }
 
+  // Funcion para dibujar en el mapa.
   drawShapes(event){
 
     if (event.type == 'mousedown' && this.utilities.draw.active) {              // Evento de mousedown.
@@ -301,6 +331,64 @@ class DungeonMap{
     }
   }
 
+  // Funcion para limpiar todos los dibujos.
+  clearDrawings(){
+    this.drawings = [];
+  }
+
+  // Funcion para mostrar medidas en el mapa.
+  showMeasure(event){
+    if (event.type == 'mousedown') {
+      this.utilities.measure.variables.startX = event.offsetX;
+      this.utilities.measure.variables.startY = event.offsetY;
+
+      this.clickOffsetX = event.clientX;
+      this.clickOffsetY = event.clientY;
+
+      this.mousedown = true;
+    }else if (event.type == 'mousemove' && this.mousedown) {
+      let startX = this.utilities.measure.variables.startX;
+      let startY = this.utilities.measure.variables.startY;
+      let endX = (event.clientX - this.canvas.offsetLeft)/this.scale;
+      let endY = (event.clientY - this.canvas.offsetTop)/this.scale;
+      
+      if (this.utilities.measure.options.snap_center) {
+        startX = ((Math.trunc(startX/this.gridSize))*this.gridSize)+(this.gridSize/2);
+        startY = ((Math.trunc(startY/this.gridSize))*this.gridSize)+(this.gridSize/2);
+        endX = ((Math.trunc(endX/this.gridSize))*this.gridSize)+(this.gridSize/2);
+        endY = ((Math.trunc(endY/this.gridSize))*this.gridSize)+(this.gridSize/2);
+      }else if (this.utilities.measure.options.snap_corner) {
+        startX = ((Math.trunc(startX/this.gridSize))*this.gridSize)+(this.gridSize);
+        startY = ((Math.trunc(startY/this.gridSize))*this.gridSize)+(this.gridSize);
+        endX = ((Math.trunc(endX/this.gridSize))*this.gridSize)+(this.gridSize);
+        endY = ((Math.trunc(endY/this.gridSize))*this.gridSize)+(this.gridSize);
+      }
+      
+      this.utilities.measure.variables.shape = new Path2D();
+      let line = this.utilities.measure.variables.shape;
+      
+      line.moveTo(startX, startY);
+      line.lineTo(endX, endY);
+
+      
+      let distanceX = (startX - endX)/this.scale;
+      let distanceY = (startY - endY)/this.scale;
+      let distance = Math.floor(Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)));
+
+      let distanceInGrid = (Math.floor(distance/this.gridSize))*this.gridDistanceReference.convertion_index;
+      let distanceUnits = distanceInGrid>0 ? this.gridDistanceReference.units+'s' : this.gridDistanceReference.units;
+      
+      this.utilities.measure.variables.text = `${distanceInGrid}${distanceUnits}`;
+      this.utilities.measure.variables.textX = (startX+endX)/2;
+      this.utilities.measure.variables.textY = (startY+endY)/2;
+    }else if ((event.type == 'mouseup' || event.type == 'mouseleave') && this.mousedown) {
+      this.mousedown = false;
+      this.utilities.measure.variables.shape = undefined;
+      this.utilities.measure.variables.startX = 0;
+      this.utilities.measure.variables.startY = 0;
+    }
+  }
+
   update(){
     this.ctx.clearRect(0,0,canvas.width,canvas.height);
     this.canvas.style.transform = `scale(${this.scale})`;
@@ -362,6 +450,21 @@ class DungeonMap{
     this.drawings.forEach((drawing) => {
       this.ctx.stroke(drawing);
     });
+
+    // Visualizacion de las medidas.
+    if(this.utilities.measure.variables.shape){
+      let measure_text = this.utilities.measure.variables.text;
+      let measure_font = this.utilities.measure.variables.font;
+      let measure_font_weight = this.utilities.measure.variables.font_height;
+      let measure_text_x = this.utilities.measure.variables.textX;
+      let measure_text_y = this.utilities.measure.variables.textY;
+
+      this.ctx.stroke(this.utilities.measure.variables.shape);
+
+      this.ctx.fillStyle = "Black";
+      this.ctx.font = `bold ${measure_font_weight} ${measure_font}`;
+      this.ctx.fillText(measure_text, measure_text_x, measure_text_y);
+    }
 
     // Visualizacion de las imagenes.
     this.images.forEach((mapImg) => {

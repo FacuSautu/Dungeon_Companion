@@ -301,9 +301,9 @@ toolbarMenu.forEach((menuOption) => {
     if (canBeActive.includes(slctdMenuOpt)) {
       toolbarMenu.forEach((li) => li.classList.remove('active'));
       menuOption.classList.add('active');
+      // Cambio de valores en el objeto Map.
+      map.setUtilityOpt('utility', slctdMenuOpt);
     }
-    // Cambio de valores en el objeto Map.
-    map.setUtilityOpt('utility', slctdMenuOpt);
   });
 });
 
@@ -318,8 +318,24 @@ toolbarSubmenu.forEach((submenuOption) => {
     switch (slctdMenuOpt) {
       case 'select':
       case 'draw':
-        map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
-        parentOption.setAttribute('submenu_option', slctdSubmenuOpt);
+      case 'measure':
+        if (slctdSubmenuOpt == 'clear') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Borrar Dibujos',
+            text: 'Esta por borrar todos los dibujos.\n ¿Esta seguro?',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            showCancelButton: true
+          }).then(resolve => {
+            if (resolve.value) {
+              map.clearDrawings();
+            }
+          });
+        }else{
+          map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
+          parentOption.setAttribute('submenu_option', slctdSubmenuOpt);
+        }
         break;
 
       case 'layers':
