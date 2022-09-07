@@ -507,9 +507,9 @@ class DungeonMap{
         this.ctx.fill();
 
         // Gizmo de rotacion.
-        this.ctx.beginPath();
-        this.ctx.arc(mapImg.rotationGizmo[0], mapImg.rotationGizmo[1], mapImg.gizmoRadius, 0, Math.PI*2);
-        this.ctx.fill();
+        // this.ctx.beginPath();
+        // this.ctx.arc(mapImg.rotationGizmo[0], mapImg.rotationGizmo[1], mapImg.gizmoRadius, 0, Math.PI*2);
+        // this.ctx.fill();
       }
 
       this.ctx.drawImage(mapImg.img, originX, originY, imgWidth, imgHeight);
