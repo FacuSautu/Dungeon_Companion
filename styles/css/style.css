@@ -96,6 +96,19 @@ body {
   cursor: pointer;
 }
 
+#toolbar .toolbar_menu .draw_palette {
+  display: none;
+  position: absolute;
+  width: 200px;
+  background-color: white;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 10px;
+  top: 0;
+  left: 130%;
+  z-index: -5;
+}
+
 /* Estilos del contenido principal (canvas) */
 .content {
   height: 100vh;

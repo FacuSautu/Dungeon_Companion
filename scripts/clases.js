@@ -63,7 +63,7 @@ class DungeonMap{
           startX: 0,
           startY: 0,
           color: 'black',
-          weight: '2px',
+          weight: 2,
           font: 'Arial',
           text: ''
         }
@@ -322,7 +322,7 @@ class DungeonMap{
 
     }else if (event.type == 'mouseup' && this.mousedown && !this.utilities.draw.options.polygon) {  // Evento de mouseup
       this.mousedown = false;
-      this.drawings.push(this.utilities.draw.variables.shape);
+      this.drawings.push({shape: this.utilities.draw.variables.shape, color: this.utilities.draw.variables.color, weight: this.utilities.draw.variables.weight});
       this.utilities.draw.variables.shape = undefined;
       this.utilities.draw.variables.startX = 0;
       this.utilities.draw.variables.startY = 0;
@@ -444,12 +444,16 @@ class DungeonMap{
     });
 
     // Visualizacion de los dibujos.
+    this.drawings.forEach((drawing) => {
+      this.ctx.strokeStyle = drawing.color;
+      this.ctx.lineWidth = drawing.weight;
+      this.ctx.stroke(drawing.shape);
+    });
     if(this.utilities.draw.variables.shape){
+      this.ctx.strokeStyle = this.utilities.draw.variables.color;
+      this.ctx.lineWidth = this.utilities.draw.variables.weight;
       this.ctx.stroke(this.utilities.draw.variables.shape);
     }
-    this.drawings.forEach((drawing) => {
-      this.ctx.stroke(drawing);
-    });
 
     // Visualizacion de las medidas.
     if(this.utilities.measure.variables.shape){

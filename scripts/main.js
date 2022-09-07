@@ -77,6 +77,13 @@ canvas.addEventListener('mousedown', (e)=>{
       });
 
       if (clickCanvas) {
+        if (map.utilities.draw.active) {
+          let lineColor = document.getElementById('draw_palette_color').value;
+          let lineWidth = Number(document.getElementById('draw__palette_line_width').value);
+
+          map.utilities.draw.variables.color = lineColor;
+          map.utilities.draw.variables.weight = lineWidth;
+        }
         map.handleMouseDown(e);
       }
       break;
@@ -295,6 +302,7 @@ deleteSavedTokensBtn.addEventListener('click', ()=>{
 toolbarMenu.forEach((menuOption) => {
   menuOption.addEventListener('click', (e) => {
     const slctdMenuOpt = menuOption.getAttribute('menu_option');                // Variable con el indicador de la opcion elegida.
+    const slctdSubmenuOpt = menuOption.getAttribute('submenu_option');
     const canBeActive = ['select', 'draw', 'measure', 'fog'];                   // Array de opciones que pueden estar marcadas como activas.
 
     // Seteo de elemento activo del menu.
@@ -303,7 +311,18 @@ toolbarMenu.forEach((menuOption) => {
       menuOption.classList.add('active');
       // Cambio de valores en el objeto Map.
       map.setUtilityOpt('utility', slctdMenuOpt);
+      
+      if (slctdSubmenuOpt) {
+        map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
+      }
+
+      if (slctdMenuOpt == 'draw') {
+        document.getElementById('toolbar_draw_palette').style.display = 'flex';
+      }else{
+        document.getElementById('toolbar_draw_palette').style.display = 'none';
+      }
     }
+
   });
 });
 
@@ -333,7 +352,6 @@ toolbarSubmenu.forEach((submenuOption) => {
             }
           });
         }else{
-          map.setUtilityOpt('utility_opt', slctdMenuOpt, slctdSubmenuOpt);
           parentOption.setAttribute('submenu_option', slctdSubmenuOpt);
         }
         break;

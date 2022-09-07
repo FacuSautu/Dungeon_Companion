@@ -7,6 +7,9 @@
     <!-- Bootstrap 5.2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
+    <!-- Bootstrap color picker 3.4 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/css/bootstrap-colorpicker.min.css" integrity="sha512-m/uSzCYYP5f55d4nUi9mnY9m49I8T+GUEe4OQd3fYTpFU9CIaPazUG/f8yUkY0EWlXBJnpsA7IToT2ljMgB87Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Estilos propios -->
     <link rel="stylesheet" href="styles/css/style.css">
   </head>
@@ -77,7 +80,7 @@
             <li class="toolbar_submenu_option" submenu_option="no_snap"><i class="fa-solid fa-ruler-vertical" can_be_selected></i>No snap</li>
           </ul>
         </li>
-        <li class="toolbar_menu_option" menu_option="fog" submenu_option="">
+        <!-- <li class="toolbar_menu_option" menu_option="fog" submenu_option="">
           <i class="toolbar_menu_icon fa-lg fa-solid fa-cloud"></i>
           <ul class="toolbar_submenu">
             <li class="toolbar_submenu_option" submenu_option="reveal"><i class="fa-solid fa-eye" can_be_selected></i>Reveal Areas</li>
@@ -85,11 +88,11 @@
             <li class="toolbar_submenu_option" submenu_option="hide"><i class="fa-lg fa-solid fa-cloud" can_be_selected></i>Hide Areas</li>
             <li class="toolbar_submenu_option" submenu_option="reset"><i class="fa-solid fa-trash-can"></i>Reset Fog</li>
           </ul>
-        </li>
-        <li class="toolbar_menu_option" menu_option="turns" submenu_option="">
+        </li> -->
+        <!-- <li class="toolbar_menu_option" menu_option="turns" submenu_option="">
           <i class="toolbar_menu_icon fa-lg fa-solid fa-clock"></i>
-        </li>
-        <li class="toolbar_menu_option" menu_option="rolls" submenu_option="">
+        </li> -->
+        <!-- <li class="toolbar_menu_option" menu_option="rolls" submenu_option="">
           <i class="toolbar_menu_icon fa-lg fa-solid fa-dice-d20"></i>
           <ul class="toolbar_submenu">
             <li class="toolbar_submenu_option">
@@ -149,10 +152,20 @@
               <div>5</div>
             </li>
           </ul>
-        </li>
+        </li> -->
         <!-- <li class="toolbar_menu_option" menu_option="info">
           <i class="toolbar_menu_icon fa-lg fa-solid fa-circle-question"></i>
         </li> -->
+        <div class="draw_palette justify-content-center align-items-center" id="toolbar_draw_palette">
+          <input type="color" id="draw_palette_color">
+          
+          <div class="col-8 ms-3 d-flex justify-content-center align-items-center">
+            <div class="input-group col-2">
+              <input class="form-control form-control-sm" type="number" placeholder="Line Width" value="2" id="draw__palette_line_width">
+              <span class="input-group-text" id="basic-addon2">px</span>
+            </div>
+          </div>
+        </div>
       </ul>
     </div>
 
